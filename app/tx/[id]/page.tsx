@@ -3,6 +3,7 @@
 import { ChaingraphClient } from "chaingraph-ts";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 import { 
   decodeTransaction, 
   hexToBin, 
@@ -264,7 +265,12 @@ export default function TransactionPage() {
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Outpoint TxID</p>
-                    <p className="font-mono text-sm break-all">{input.outpoint_transaction_hash.replace('\\x', '')}</p>
+                    <Link 
+                      href={`/tx/${input.outpoint_transaction_hash.replace('\\x', '')}`}
+                      className="font-mono text-sm break-all text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      {input.outpoint_transaction_hash.replace('\\x', '')}
+                    </Link>
                   </div>
                   <div>
                     <p className="text-sm text-gray-600">Outpoint Index</p>
