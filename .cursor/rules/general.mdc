@@ -1,0 +1,11 @@
+---
+description: General rules for this project
+globs: 
+alwaysApply: false
+---
+# Next.js rules
+
+- Use the App Router structure with `page.tsx` files in route directories.
+- Client components must be explicitly marked with `'use client'` at the top of the file.
+- Use kebab-case for directory names (e.g., `components/auth-form`) and PascalCase for component files.
+- Prefer named exports over default exports, i.e. `export function Button() { /* ... */ }` instead of `export default function Button() { /* ... */ }`.
