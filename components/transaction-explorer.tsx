@@ -44,7 +44,7 @@ export default function TransactionExplorer() {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <header className="bg-white border-b p-4 shadow-sm">
-        <h1 className="text-2xl font-bold text-gray-800">Bitcoin Cash Transaction Graph Explorer</h1>
+        <h1 className="text-2xl font-bold text-gray-800">CashFlow Bitcoin Cash Explorer</h1>
 
         <form onSubmit={handleSearch} className="flex gap-2 mt-4">
           <Input

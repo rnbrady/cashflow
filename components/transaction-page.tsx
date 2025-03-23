@@ -6,6 +6,7 @@ import {
   tryDecodeCashAddress,
   formatValue,
   parseScript,
+  getScriptType,
   ValueUnit
 } from "@/lib/transaction-utils";
 import { Transaction } from "@/lib/types";
@@ -188,6 +189,20 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                           {tryDecodeCashAddress(output.locking_bytecode)}
                         </p>
                       </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Locking Bytecode</p>
+                        <p className="font-mono text-sm break-all">{output.locking_bytecode.replace('\\x', '')}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Locking Script</p>
+                        <p className="font-mono text-sm break-all">{parseScript(output.locking_bytecode)}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Type</p>
+                        <p className="text-sm">
+                          {getScriptType(output.locking_bytecode_pattern)}
+                        </p>
+                      </div>
                       {output.spent_by?.[0] && (
                         <div>
                           <p className="text-sm text-gray-600">Spent By</p>
@@ -202,14 +217,6 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                           </p>
                         </div>
                       )}
-                      <div>
-                        <p className="text-sm text-gray-600">Locking Bytecode</p>
-                        <p className="font-mono text-sm break-all">{output.locking_bytecode.replace('\\x', '')}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm text-gray-600">Locking Script</p>
-                        <p className="font-mono text-sm break-all">{parseScript(output.locking_bytecode)}</p>
-                      </div>
                     </div>
                   </div>
                 ))}

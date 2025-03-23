@@ -24,7 +24,7 @@ export function tryDecodeCashAddress(lockingBytecode: string): string {
       prefix: 'bitcoincash'
     });
     if (typeof result === 'string') {
-      return 'Invalid locking bytecode';
+      return '-';
     }
     return result.address;
   } catch (e) {
@@ -71,5 +71,29 @@ export function parseScript(lockingBytecode: string): string {
   } catch (e) {
     console.error('Error parsing script:', e);
     return 'Could not parse script';
+  }
+}
+
+export function getScriptType(lockingBytecodePattern: string): string {
+  try {
+    const script = lockingBytecodePattern.replace(/^\\x/, '');
+
+    if (typeof script === 'string') {
+      // Common script patterns
+      if (script === '76a91488ac') {
+        return 'P2PKH (Pay to Public Key Hash)';
+      }
+      if (script === 'a91487') {
+        return 'P2SH (Pay to Script Hash)';
+      }
+      if (script.startsWith('6a')) {
+        return 'OP_RETURN (Data Carrier)';
+      }
+      return `${script}`;
+    }
+    return 'Invalid Script';
+  } catch (e) {
+    console.error('Error parsing script type:', e);
+    return 'Could not determine type';
   }
 } 

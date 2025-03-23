@@ -26,6 +26,10 @@ export const GET_TRANSACTION_DETAILS = `
         output_index
         value_satoshis
         locking_bytecode
+        locking_bytecode_pattern
+        nonfungible_token_capability
+        nonfungible_token_commitment
+        token_category
         spent_by {
           input_index
           transaction {

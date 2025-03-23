@@ -425,14 +425,8 @@ export default function TransactionGraph({ transactionData, onTransactionSelect 
         }}
       >
         <Controls />
-        <MiniMap
-          nodeStrokeColor={(n) => (n.data?.isMain ? "#3b82f6" : "#9ca3af")}
-          nodeColor={(n) => n.data?.color || "#ffffff"}
-        />
         <Background variant="dots" gap={12} size={1} color="#e5e7eb" />
-        <Panel position="top-left" className="bg-white p-2 rounded shadow-md">
-          <h3 className="text-sm font-medium">Bitcoin Cash Transaction Graph</h3>
-        </Panel>
+        
       </ReactFlow>
     </div>
   )
