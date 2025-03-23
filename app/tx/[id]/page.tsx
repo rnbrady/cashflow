@@ -3,16 +3,8 @@
 import { ChaingraphClient } from "chaingraph-ts";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import Link from "next/link";
-import { 
-  decodeTransaction, 
-  hexToBin, 
-  lockingBytecodeToCashAddress,
-  binToHex,
-  Transaction,
-  encodeTransaction,
-  disassembleBytecodeBCH
-} from "@bitauth/libauth";
+import { decodeTransaction, hexToBin, Transaction } from "@bitauth/libauth";
+import { TransactionPage } from "../../../components/transaction-page";
 
 interface TransactionDetails {
   hash: string;
@@ -43,61 +35,60 @@ interface TransactionDetails {
   }>;
 }
 
-function formatHexWithNewlines(hex: string): string {
-  const charsPerLine = 128; // 64 bytes = 128 hex chars
-  const lines = hex.match(new RegExp(`.{1,${charsPerLine}}`, 'g')) || [];
-  return lines.join('\n');
-}
+// Cache for parent transactions
+const parentTxCache = new Map<string, {
+  size_bytes: string;
+  fee_satoshis: string | null;
+  block_inclusions?: Array<{
+    block: {
+      height: string;
+      timestamp: string;
+    };
+  }>;
+}>();
 
-function formatTimestamp(timestamp: string): string {
-  return new Date(parseInt(timestamp) * 1000).toLocaleString();
-}
-
-function tryDecodeCashAddress(lockingBytecode: string): string {
-  try {
-    // Remove \x prefix if present
-    const cleanHex = lockingBytecode.replace(/^\\x/, '');
-    const bytecode = hexToBin(cleanHex);
-    const result = lockingBytecodeToCashAddress({
-      bytecode,
-      prefix: 'bitcoincash'
-    });
-    if (typeof result === 'string') {
-      return 'Invalid locking bytecode';
-    }
-    return result.address;
-  } catch (e) {
-    console.error('Error decoding address:', e);
-    return 'Could not decode address';
-  }
-}
-
-function formatSats(sats: string | null): string {
-  if (!sats) return '0 sats';
-  return `${parseInt(sats).toLocaleString()} sats`;
-}
-
-function parseScript(lockingBytecode: string): string {
-  try {
-    const cleanHex = lockingBytecode.replace(/^\\x/, '');
-    const bytecode = hexToBin(cleanHex);
-    const result = disassembleBytecodeBCH(bytecode);
-    if (typeof result === 'string') {
-      return result;
-    }
-    return result;
-  } catch (e) {
-    console.error('Error parsing script:', e);
-    return 'Could not parse script';
-  }
-}
-
-export default function TransactionPage() {
+export default function TransactionPageContainer() {
   const params = useParams();
   const txId = params.id as string;
   const [transaction, setTransaction] = useState<TransactionDetails | null>(null);
   const [decodedTx, setDecodedTx] = useState<Transaction | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [parentTransactions, setParentTransactions] = useState<Map<string, any>>(new Map());
+
+  // Function to fetch a parent transaction
+  const fetchParentTransaction = async (txHash: string, chaingraphClient: ChaingraphClient) => {
+    // If we already have this transaction in cache, skip fetching
+    if (parentTxCache.has(txHash)) {
+      setParentTransactions(prev => new Map(prev).set(txHash, parentTxCache.get(txHash)));
+      return;
+    }
+
+    try {
+      const result = await chaingraphClient.query(`
+        query GetParentTransaction($txHash: bytea!) {
+          transaction(where: { hash: { _eq: $txHash } }) {
+            size_bytes
+            fee_satoshis
+            block_inclusions {
+              block {
+                height
+                timestamp
+              }
+            }
+          }
+        }
+      `, { txHash });
+
+      if (result.data?.transaction?.[0]) {
+        const parentTx = result.data.transaction[0];
+        // Update both the cache and state
+        parentTxCache.set(txHash, parentTx);
+        setParentTransactions(prev => new Map(prev).set(txHash, parentTx));
+      }
+    } catch (err) {
+      console.error('Failed to fetch parent transaction:', err);
+    }
+  };
 
   useEffect(() => {
     const fetchTransaction = async () => {
@@ -149,6 +140,11 @@ export default function TransactionPage() {
         const tx = result.data.transaction[0];
         setTransaction(tx);
 
+        // Fetch parent transactions
+        for (const input of tx.inputs) {
+          fetchParentTransaction(input.outpoint_transaction_hash, chaingraphClient);
+        }
+
         // Try to decode the transaction
         if (tx.encoded_hex) {
           const decoded = decodeTransaction(hexToBin(tx.encoded_hex));
@@ -191,154 +187,11 @@ export default function TransactionPage() {
     );
   }
 
-  const blockInclusion = transaction.block_inclusions[0];
-
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Transaction Details</h1>
-      
-      <div className="space-y-6">
-        {/* Transaction Overview */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm text-gray-600">Transaction ID</p>
-              <p className="font-mono text-sm break-all">{txId}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Size</p>
-              <p>{transaction.size_bytes} bytes</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Fee</p>
-              <p>{formatSats(transaction.fee_satoshis)}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Locktime</p>
-              <p>{transaction.locktime}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-600">Type</p>
-              <p>{transaction.is_coinbase ? 'Coinbase' : 'Regular'}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Block Information */}
-        {blockInclusion && (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-4">Block Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-600">Block Height</p>
-                <p>{blockInclusion.block.height}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Timestamp</p>
-                <p>{formatTimestamp(blockInclusion.block.timestamp)}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Block Hash</p>
-                <p className="font-mono text-sm break-all">{blockInclusion.block.hash.replace('\\x', '')}</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Inputs */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">{transaction.inputs.length} Inputs</h2>
-          <div className="space-y-4">
-            {transaction.inputs.map((input) => (
-              <div key={input.input_index} className="border rounded p-4">
-                <div className="grid grid-cols-1 gap-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div>
-                      <p className="text-sm text-gray-600">Index</p>
-                      <p>{input.input_index}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Value</p>
-                      <p>{formatSats(input.value_satoshis)}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Outpoint TxID</p>
-                    <Link 
-                      href={`/tx/${input.outpoint_transaction_hash.replace('\\x', '')}`}
-                      className="font-mono text-sm break-all text-blue-600 hover:text-blue-800 hover:underline"
-                    >
-                      {input.outpoint_transaction_hash.replace('\\x', '')}
-                    </Link>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Outpoint Index</p>
-                    <p>{input.outpoint_index}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Sequence</p>
-                    <p>{input.sequence_number}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Unlocking Bytecode</p>
-                    <p className="font-mono text-sm break-all">{input.unlocking_bytecode?.replace('\\x', '') || 'No unlocking bytecode'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Unlocking Script</p>
-                    <p className="font-mono text-sm break-all">{input.unlocking_bytecode ? parseScript(input.unlocking_bytecode) : 'No unlocking script'}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Outputs */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">{transaction.outputs.length} Outputs</h2>
-          <div className="space-y-4">
-            {transaction.outputs.map((output) => (
-              <div key={output.output_index} className="border rounded p-4">
-                <div className="grid grid-cols-1 gap-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div>
-                      <p className="text-sm text-gray-600">Index</p>
-                      <p>{output.output_index}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Value</p>
-                      <p>{formatSats(output.value_satoshis)}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Address</p>
-                    <p className="font-mono text-sm break-all">
-                      {tryDecodeCashAddress(output.locking_bytecode)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Locking Bytecode</p>
-                    <p className="font-mono text-sm break-all">{output.locking_bytecode.replace('\\x', '')}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Locking Script</p>
-                    <p className="font-mono text-sm break-all">{parseScript(output.locking_bytecode)}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Raw Transaction */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">Raw Transaction</h2>
-          <pre className="font-mono text-sm bg-gray-50 p-4 rounded overflow-x-auto whitespace-pre-wrap">
-            {formatHexWithNewlines(transaction.encoded_hex || '')}
-          </pre>
-        </div>
-      </div>
-    </div>
+    <TransactionPage 
+      transaction={transaction}
+      decodedTx={decodedTx}
+      parentTransactions={parentTransactions}
+    />
   );
 } 
