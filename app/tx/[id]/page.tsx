@@ -3,81 +3,31 @@
 import { ChaingraphClient } from "chaingraph-ts";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { decodeTransaction, hexToBin, Transaction } from "@bitauth/libauth";
-import { TransactionPage } from "../../../components/transaction-page";
-
-interface TransactionDetails {
-  hash: string;
-  encoded_hex: string | null;
-  size_bytes: string;
-  is_coinbase: boolean;
-  locktime: string;
-  fee_satoshis: string | null;
-  block_inclusions: Array<{
-    block: {
-      height: string;
-      hash: string;
-      timestamp: string;
-    };
-  }>;
-  inputs: Array<{
-    input_index: string;
-    outpoint_transaction_hash: string;
-    outpoint_index: string;
-    sequence_number: string;
-    value_satoshis: string | null;
-    unlocking_bytecode?: string;
-  }>;
-  outputs: Array<{
-    output_index: string;
-    value_satoshis: string;
-    locking_bytecode: string;
-  }>;
-}
+import { decodeTransaction, hexToBin } from "@bitauth/libauth";
+import { TransactionPage } from "@/components/transaction-page";
+import { Transaction, ParentTransaction } from "@/lib/types";
+import { GET_TRANSACTION_DETAILS, GET_PARENT_TRANSACTION } from "@/lib/queries";
 
 // Cache for parent transactions
-const parentTxCache = new Map<string, {
-  size_bytes: string;
-  fee_satoshis: string | null;
-  block_inclusions?: Array<{
-    block: {
-      height: string;
-      timestamp: string;
-    };
-  }>;
-}>();
+const parentTxCache = new Map<string, ParentTransaction>();
 
 export default function TransactionPageContainer() {
   const params = useParams();
   const txId = params.id as string;
-  const [transaction, setTransaction] = useState<TransactionDetails | null>(null);
-  const [decodedTx, setDecodedTx] = useState<Transaction | null>(null);
+  const [transaction, setTransaction] = useState<Transaction | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [parentTransactions, setParentTransactions] = useState<Map<string, any>>(new Map());
+  const [parentTransactions, setParentTransactions] = useState<Map<string, ParentTransaction>>(new Map());
 
   // Function to fetch a parent transaction
   const fetchParentTransaction = async (txHash: string, chaingraphClient: ChaingraphClient) => {
     // If we already have this transaction in cache, skip fetching
     if (parentTxCache.has(txHash)) {
-      setParentTransactions(prev => new Map(prev).set(txHash, parentTxCache.get(txHash)));
+      setParentTransactions(prev => new Map(prev).set(txHash, parentTxCache.get(txHash)!));
       return;
     }
 
     try {
-      const result = await chaingraphClient.query(`
-        query GetParentTransaction($txHash: bytea!) {
-          transaction(where: { hash: { _eq: $txHash } }) {
-            size_bytes
-            fee_satoshis
-            block_inclusions {
-              block {
-                height
-                timestamp
-              }
-            }
-          }
-        }
-      `, { txHash });
+      const result = await chaingraphClient.query(GET_PARENT_TRANSACTION, { txHash });
 
       if (result.data?.transaction?.[0]) {
         const parentTx = result.data.transaction[0];
@@ -100,38 +50,7 @@ export default function TransactionPageContainer() {
 
         const chaingraphClient = new ChaingraphClient(chaingraphUrl);
         
-        const result = await chaingraphClient.query(`
-          query GetTransactionDetails($txHash: bytea!) {
-            transaction(where: { hash: { _eq: $txHash } }) {
-              hash
-              encoded_hex
-              size_bytes
-              is_coinbase
-              locktime
-              fee_satoshis
-              block_inclusions {
-                block {
-                  height
-                  hash
-                  timestamp
-                }
-              }
-              inputs {
-                input_index
-                outpoint_transaction_hash
-                outpoint_index
-                sequence_number
-                value_satoshis
-                unlocking_bytecode
-              }
-              outputs {
-                output_index
-                value_satoshis
-                locking_bytecode
-              }
-            }
-          }
-        `, { txHash: `\\x${txId}` });
+        const result = await chaingraphClient.query(GET_TRANSACTION_DETAILS, { txHash: `\\x${txId}` });
 
         if (!result.data?.transaction?.[0]) {
           throw new Error("Transaction not found");
@@ -150,8 +69,6 @@ export default function TransactionPageContainer() {
           const decoded = decodeTransaction(hexToBin(tx.encoded_hex));
           if (typeof decoded === 'string') {
             console.error('Failed to decode transaction:', decoded);
-          } else {
-            setDecodedTx(decoded);
           }
         }
       } catch (err) {
@@ -190,7 +107,6 @@ export default function TransactionPageContainer() {
   return (
     <TransactionPage 
       transaction={transaction}
-      decodedTx={decodedTx}
       parentTransactions={parentTransactions}
     />
   );

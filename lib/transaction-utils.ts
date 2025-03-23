@@ -33,9 +33,30 @@ export function tryDecodeCashAddress(lockingBytecode: string): string {
   }
 }
 
-export function formatSats(sats: string | null): string {
-  if (!sats) return '0 sats';
-  return `${parseInt(sats).toLocaleString()} sats`;
+export type ValueUnit = 'BCH' | 'sats' | 'USD';
+
+export function formatValue(sats: string | null, unit: ValueUnit, usdRate?: number): string {
+  if (!sats) return `0 ${unit}`;
+  const value = parseInt(sats);
+  
+  switch (unit) {
+    case 'sats':
+      return `${value.toLocaleString()} sats`;
+    case 'BCH':
+      return `${(value / 100_000_000).toLocaleString(undefined, {
+        minimumFractionDigits: 8,
+        maximumFractionDigits: 8
+      })} BCH`;
+    case 'USD':
+      if (usdRate === undefined) return 'Loading...';
+      const usdValue = (value / 100_000_000) * usdRate;
+      return `$${usdValue.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}`;
+    default:
+      return `${value.toLocaleString()} sats`;
+  }
 }
 
 export function parseScript(lockingBytecode: string): string {

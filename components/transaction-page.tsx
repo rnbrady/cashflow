@@ -1,49 +1,47 @@
 import Link from "next/link";
-import { Transaction } from "@bitauth/libauth";
+import { useState, useEffect } from "react";
 import { 
   formatHexWithNewlines,
   formatTimestamp,
   tryDecodeCashAddress,
-  formatSats,
-  parseScript
-} from "../lib/transaction-utils";
+  formatValue,
+  parseScript,
+  ValueUnit
+} from "@/lib/transaction-utils";
+import { Transaction } from "@/lib/types";
 
 interface TransactionPageProps {
-  transaction: {
-    hash: string;
-    encoded_hex: string | null;
-    size_bytes: string;
-    is_coinbase: boolean;
-    locktime: string;
-    fee_satoshis: string | null;
-    block_inclusions: Array<{
-      block: {
-        height: string;
-        hash: string;
-        timestamp: string;
-      };
-    }>;
-    inputs: Array<{
-      input_index: string;
-      outpoint_transaction_hash: string;
-      outpoint_index: string;
-      sequence_number: string;
-      value_satoshis: string | null;
-      unlocking_bytecode?: string;
-    }>;
-    outputs: Array<{
-      output_index: string;
-      value_satoshis: string;
-      locking_bytecode: string;
-    }>;
-  };
-  decodedTx: Transaction | null;
-  parentTransactions?: Map<string, any>;
+  transaction: Transaction;
 }
 
-export function TransactionPage({ transaction, decodedTx, parentTransactions }: TransactionPageProps) {
+export function TransactionPage({ transaction }: TransactionPageProps) {
+  const [unit, setUnit] = useState<ValueUnit>('sats');
+  const [usdRate, setUsdRate] = useState<number>();
   const txId = transaction.hash.replace('\\x', '');
   const blockInclusion = transaction.block_inclusions[0];
+
+  useEffect(() => {
+    async function fetchExchangeRate() {
+      try {
+        const response = await fetch('https://api.coinbase.com/v2/exchange-rates?currency=BCH');
+        const data = await response.json();
+        setUsdRate(parseFloat(data.data.rates.USD));
+      } catch (error) {
+        console.error('Failed to fetch exchange rate:', error);
+      }
+    }
+    fetchExchangeRate();
+  }, []);
+
+  const toggleUnit = () => {
+    setUnit(prev => {
+      switch (prev) {
+        case 'sats': return 'BCH';
+        case 'BCH': return 'USD';
+        default: return 'sats';
+      }
+    });
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -64,7 +62,13 @@ export function TransactionPage({ transaction, decodedTx, parentTransactions }: 
             </div>
             <div>
               <p className="text-sm text-gray-600">Fee</p>
-              <p>{formatSats(transaction.fee_satoshis)}</p>
+              <button 
+                onClick={toggleUnit}
+                className="hover:text-blue-600 transition-colors"
+                title="Click to toggle between sats, BCH, and USD"
+              >
+                {formatValue(transaction.fee_satoshis, unit, usdRate)}
+              </button>
             </div>
             <div>
               <p className="text-sm text-gray-600">Locktime</p>
@@ -98,100 +102,119 @@ export function TransactionPage({ transaction, decodedTx, parentTransactions }: 
           </div>
         )}
 
-        {/* Inputs */}
+        {/* Transaction I/O */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">{transaction.inputs.length} Inputs</h2>
-          <div className="space-y-4">
-            {transaction.inputs.map((input) => (
-              <div key={input.input_index} className="border rounded p-4">
-                <div className="grid grid-cols-1 gap-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div>
-                      <p className="text-sm text-gray-600">Index</p>
-                      <p>{input.input_index}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Value</p>
-                      <p>{formatSats(input.value_satoshis)}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Outpoint TxID</p>
-                    <Link 
-                      href={`/tx/${input.outpoint_transaction_hash.replace('\\x', '')}`}
-                      className="font-mono text-sm break-all text-blue-600 hover:text-blue-800 hover:underline"
-                    >
-                      {input.outpoint_transaction_hash.replace('\\x', '')}
-                    </Link>
-                    {parentTransactions?.get(input.outpoint_transaction_hash) && (
-                      <div className="mt-1 text-xs text-gray-500">
-                        <p>Size: {parentTransactions.get(input.outpoint_transaction_hash).size_bytes} bytes</p>
-                        <p>Fee: {formatSats(parentTransactions.get(input.outpoint_transaction_hash).fee_satoshis)}</p>
-                        {parentTransactions.get(input.outpoint_transaction_hash).block_inclusions?.[0]?.block && (
-                          <p>
-                            Block: {parentTransactions.get(input.outpoint_transaction_hash).block_inclusions[0].block.height}
-                            ({formatTimestamp(parentTransactions.get(input.outpoint_transaction_hash).block_inclusions[0].block.timestamp)})
-                          </p>
-                        )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Inputs */}
+            <div>
+              <h2 className="text-lg font-semibold mb-4">{transaction.inputs.length} Inputs</h2>
+              <div className="space-y-4">
+                {transaction.inputs.map((input) => (
+                  <div key={input.input_index} className="border rounded p-4">
+                    <div className="grid grid-cols-1 gap-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div>
+                          <p className="text-sm text-gray-600">Index</p>
+                          <p>{input.input_index}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Value</p>
+                          <button 
+                            onClick={toggleUnit}
+                            className="hover:text-blue-600 transition-colors"
+                            title="Click to toggle between sats, BCH, and USD"
+                          >
+                            {formatValue(input.value_satoshis, unit, usdRate)}
+                          </button>
+                        </div>
                       </div>
-                    )}
+                      <div>
+                        <p className="text-sm text-gray-600">Outpoint TxID</p>
+                        <Link 
+                          href={`/tx/${input.outpoint_transaction_hash.replace('\\x', '')}`}
+                          className="font-mono text-sm break-all text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {input.outpoint_transaction_hash.replace('\\x', '')}
+                        </Link>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Outpoint Index</p>
+                        <p>{input.outpoint_index}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Sequence</p>
+                        <p>{input.sequence_number}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Unlocking Bytecode</p>
+                        <p className="font-mono text-sm break-all">{input.unlocking_bytecode?.replace('\\x', '') || 'No unlocking bytecode'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Unlocking Script</p>
+                        <p className="font-mono text-sm break-all">{input.unlocking_bytecode ? parseScript(input.unlocking_bytecode) : 'No unlocking script'}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Outpoint Index</p>
-                    <p>{input.outpoint_index}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Sequence</p>
-                    <p>{input.sequence_number}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Unlocking Bytecode</p>
-                    <p className="font-mono text-sm break-all">{input.unlocking_bytecode?.replace('\\x', '') || 'No unlocking bytecode'}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Unlocking Script</p>
-                    <p className="font-mono text-sm break-all">{input.unlocking_bytecode ? parseScript(input.unlocking_bytecode) : 'No unlocking script'}</p>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* Outputs */}
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">{transaction.outputs.length} Outputs</h2>
-          <div className="space-y-4">
-            {transaction.outputs.map((output) => (
-              <div key={output.output_index} className="border rounded p-4">
-                <div className="grid grid-cols-1 gap-2">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    <div>
-                      <p className="text-sm text-gray-600">Index</p>
-                      <p>{output.output_index}</p>
+            {/* Outputs */}
+            <div>
+              <h2 className="text-lg font-semibold mb-4">{transaction.outputs.length} Outputs</h2>
+              <div className="space-y-4">
+                {transaction.outputs.map((output) => (
+                  <div key={output.output_index} className="border rounded p-4">
+                    <div className="grid grid-cols-1 gap-2">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div>
+                          <p className="text-sm text-gray-600">Index</p>
+                          <p>{output.output_index}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-600">Value</p>
+                          <button 
+                            onClick={toggleUnit}
+                            className="hover:text-blue-600 transition-colors"
+                            title="Click to toggle between sats, BCH, and USD"
+                          >
+                            {formatValue(output.value_satoshis, unit, usdRate)}
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Address</p>
+                        <p className="font-mono text-sm break-all">
+                          {tryDecodeCashAddress(output.locking_bytecode)}
+                        </p>
+                      </div>
+                      {output.spent_by?.[0] && (
+                        <div>
+                          <p className="text-sm text-gray-600">Spent By</p>
+                          <Link 
+                            href={`/tx/${output.spent_by[0].transaction.hash.replace('\\x', '')}`}
+                            className="font-mono text-sm break-all text-blue-600 hover:text-blue-800 hover:underline"
+                          >
+                            {output.spent_by[0].transaction.hash.replace('\\x', '')}
+                          </Link>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Input Index: {output.spent_by[0].input_index}
+                          </p>
+                        </div>
+                      )}
+                      <div>
+                        <p className="text-sm text-gray-600">Locking Bytecode</p>
+                        <p className="font-mono text-sm break-all">{output.locking_bytecode.replace('\\x', '')}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Locking Script</p>
+                        <p className="font-mono text-sm break-all">{parseScript(output.locking_bytecode)}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm text-gray-600">Value</p>
-                      <p>{formatSats(output.value_satoshis)}</p>
-                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Address</p>
-                    <p className="font-mono text-sm break-all">
-                      {tryDecodeCashAddress(output.locking_bytecode)}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Locking Bytecode</p>
-                    <p className="font-mono text-sm break-all">{output.locking_bytecode.replace('\\x', '')}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-600">Locking Script</p>
-                    <p className="font-mono text-sm break-all">{parseScript(output.locking_bytecode)}</p>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
