@@ -5,9 +5,9 @@ import { Search, ZoomIn, ZoomOut, Maximize2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import TransactionGraph from "@/components/transaction-graph"
-import TransactionDetails from "@/components/transaction-details"
-import { fetchBlockData, fetchTransactionData } from "@/lib/api"
+import TransactionGraph from "@/components/legacy/transaction-graph"
+import TransactionDetails from "@/components/legacy/transaction-details"
+import { fetchBlockData, fetchTransactionData } from "@/lib/legacy-api"
 
 export default function BlockExplorer() {
   const [searchQuery, setSearchQuery] = useState("")

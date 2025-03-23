@@ -22,9 +22,9 @@ export interface Output {
   value_satoshis: string;
   locking_bytecode: string;
   locking_bytecode_pattern: string;
-  nonfungible_token_capability: string;
-  nonfungible_token_commitment: string;
-  token_category: string;
+  nonfungible_token_capability: string | null;
+  nonfungible_token_commitment: string | null;
+  token_category: string | null;
   spent_by?: SpentBy[];
 }
 

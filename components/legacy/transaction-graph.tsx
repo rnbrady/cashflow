@@ -3,12 +3,12 @@
 import { useCallback, useEffect, useState } from "react"
 import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, MarkerType, Panel } from "reactflow"
 import "reactflow/dist/style.css"
-import { fetchTransactionData, getDefaultTransactions } from "@/lib/api"
+import { fetchTransactionData, getDefaultTransactions } from "@/lib/legacy-api"
 
 // Custom node types
-import TransactionNode from "@/components/nodes/transaction-node"
-import InputNode from "@/components/nodes/input-node"
-import OutputNode from "@/components/nodes/output-node"
+import TransactionNode from "@/components/legacy/nodes/transaction-node"
+import InputNode from "@/components/legacy/nodes/input-node"
+import OutputNode from "@/components/legacy/nodes/output-node"
 
 // Generate a color from a hash string
 const hashToColor = (hash) => {

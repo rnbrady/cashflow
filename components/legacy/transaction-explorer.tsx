@@ -4,9 +4,9 @@ import { useState, useCallback } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import TransactionGraph from "@/components/transaction-graph"
-import TransactionDetails from "@/components/transaction-details"
-import { fetchTransactionData } from "@/lib/api"
+import TransactionGraph from "@/components/legacy/transaction-graph"
+import TransactionDetails from "@/components/legacy/transaction-details"
+import { fetchTransactionData } from "@/lib/legacy-api"
 
 export default function TransactionExplorer() {
   const [searchQuery, setSearchQuery] = useState("")

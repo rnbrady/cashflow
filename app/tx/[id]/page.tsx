@@ -57,6 +57,7 @@ export default function TransactionPageContainer() {
         }
         
         const tx = result.data.transaction[0];
+        console.log(tx);
         setTransaction(tx);
 
         // Fetch parent transactions
