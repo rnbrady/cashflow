@@ -32,7 +32,7 @@ function OutputNode({ data, isConnectable }) {
         <Tooltip>
           <TooltipTrigger asChild>
             <div
-              className="p-2 rounded-md bg-white border-r-4 shadow-sm text-xs text-right"
+              className="p-2 rounded-md bg-gray-100 border-r-4 shadow-sm text-xs text-right"
               style={{ borderRightColor: borderColor }}
             >
               <div className="font-medium mb-1">Output #{index}</div>

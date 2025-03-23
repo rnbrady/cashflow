@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 // Helper function to truncate hashes/addresses
 const truncateHash = (hash) => {
   if (!hash) return ""
-  return `${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`
+  return `${hash.substring(0, 24)}...${hash.substring(hash.length - 24)}`
 }
 
 // Helper to generate a contrasting text color based on background
@@ -43,7 +43,7 @@ function TransactionNode({ data, isConnectable }) {
   // Calculate height based on number of inputs and outputs
   const numInputs = data.vin?.length || 0
   const numOutputs = data.vout?.length || 0
-  const contentHeight = Math.max(numInputs, numOutputs) * 80 + 20
+  const contentHeight = Math.max(numInputs, numOutputs) * 82 + 18
 
   return (
     <TooltipProvider>
@@ -60,7 +60,7 @@ function TransactionNode({ data, isConnectable }) {
               color: textColor,
             }}
           >
-            <div className="text-sm font-medium truncate">{truncateHash(data.txid)}</div>
+            <div className="text-sm font-medium">{truncateHash(data.txid)}</div>
           </div>
 
           {/* Transaction content - will contain child nodes */}
