@@ -4,16 +4,15 @@ import { useState } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { fetchTransactionData } from "@/lib/chaingraph-api"
-import { MarkerType, NodeChange, ReactFlow, useOnViewportChange, Viewport } from '@xyflow/react';
+import { NodeChange, ReactFlow, useOnViewportChange, Viewport, type Node, type Edge } from '@xyflow/react';
 import { useShallow } from 'zustand/react/shallow';
 import {TransactionNode} from "@/components/nodes/transaction"
 import { InputNode } from "@/components/nodes/input"
 import { OutputNode } from "@/components/nodes/output"
-import useStore from '@/lib/store';
-import { ChartState, Transaction } from '@/lib/types';
+import { useStore, type ChartState } from '@/lib/store';
 import "@xyflow/react/dist/style.css"
 import { fetchAndDraw } from "@/lib/fetch-and-draw"
+
 
 const nodeTypes = {
   transaction: TransactionNode,
@@ -29,6 +28,7 @@ const selector = (state: ChartState) => ({
   onConnect: state.onConnect,
   addNodes: state.addNodes,
   addEdges: state.addEdges,
+  layout: state.layout,
 });
 
 
@@ -43,7 +43,8 @@ export function ChartPage() {
     onEdgesChange,
     onConnect,
     addNodes,
-    addEdges
+    addEdges,
+    layout
   } = useStore(useShallow(selector));
   
   useOnViewportChange({
@@ -79,8 +80,6 @@ export function ChartPage() {
     onNodesChange(changes)
   }
 
-  
-
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <header className="bg-white border-b p-4 shadow-sm">
@@ -97,6 +96,13 @@ export function ChartPage() {
           <Button type="submit" disabled={loading} variant="default">
             {loading ? "Searching..." : <Search className="h-4 w-4 mr-2" />}
             Search
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => layout()} 
+            variant="outline"
+          >
+            Arrange
           </Button>
         </form>
 
