@@ -1,16 +1,3 @@
-import type { Node, Edge, OnNodesChange, OnEdgesChange, OnConnect } from '@xyflow/react';
-
-export interface ChartState {
-  nodes: Node[];
-  edges: Edge[];
-  onNodesChange: OnNodesChange;
-  onEdgesChange: OnEdgesChange;
-  onConnect: OnConnect;
-  setNodes: (nodes: Node[]) => void;
-  setEdges: (edges: Edge[]) => void;
-  addNodes: (nodes: Node[]) => void;
-}
-
 export interface Block {
   height: string;
   hash: string;

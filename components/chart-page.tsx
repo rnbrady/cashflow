@@ -5,7 +5,7 @@ import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { fetchTransactionData } from "@/lib/chaingraph-api"
-import { ReactFlow } from '@xyflow/react';
+import { MarkerType, NodeChange, ReactFlow, useOnViewportChange, Viewport } from '@xyflow/react';
 import { useShallow } from 'zustand/react/shallow';
 import {TransactionNode} from "@/components/nodes/transaction"
 import { InputNode } from "@/components/nodes/input"
@@ -13,6 +13,7 @@ import { OutputNode } from "@/components/nodes/output"
 import useStore from '@/lib/store';
 import { ChartState, Transaction } from '@/lib/types';
 import "@xyflow/react/dist/style.css"
+import { fetchAndDraw } from "@/lib/fetch-and-draw"
 
 const nodeTypes = {
   transaction: TransactionNode,
@@ -27,16 +28,30 @@ const selector = (state: ChartState) => ({
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
   addNodes: state.addNodes,
+  addEdges: state.addEdges,
 });
 
 
 export function ChartPage() {
-  const [searchQuery, setSearchQuery] = useState("")
+  const [searchQuery, setSearchQuery] = useState("5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNodes } = useStore(
-    useShallow(selector),
-  );
+  const {
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    addNodes,
+    addEdges
+  } = useStore(useShallow(selector));
+  
+  useOnViewportChange({
+    onStart: (viewport: Viewport) => console.log('start', viewport),
+    onChange: (viewport: Viewport) => console.log('change', viewport),
+    onEnd: (viewport: Viewport) => {console.log('end', viewport)},
+  });
+
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -46,92 +61,11 @@ export function ChartPage() {
     setError("")
 
     try {
-      // Search for transaction by hash
-      const transaction: Transaction = await fetchTransactionData(searchQuery)
-      addNodes([{
-        id: transaction.hash,
-        type: "transaction",
-        data: {
-          transaction: transaction,
-        },
-        position: {
-          x: 0,
-          y: 0,
-        },
-        style: { width: 450 },
-      }])
-
-      addNodes(transaction.inputs.map((input) => ({
-        id: `${input.transaction.hash}-input-${input.input_index}`,
-        type: "input",
-        data: {
-          input: input,
-        },
-        parentId: input.transaction.hash,
-        extent: "parent",
-        position: {
-          x: 0,
-          y: 45 + Number(input.input_index) * 85
-        },
-        style: { width: 180, padding: "0px", border: "none" },
-      })))
-
-      addNodes(
-        transaction.inputs.map((input) => ({
-          id: `${input.outpoint_transaction_hash}`,
-          type: "transaction",
-          data: {
-            transaction: {
-              hash: input.outpoint_transaction_hash,
-              placeholder: true,
-            }
-          },
-          position: {
-            x: -500,
-            y: 0,
-          },
-          style: { width: 450 },
-        }))
-      )
-
-      addNodes(
-        transaction.inputs.map((input) => ({
-          id: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
-          type: "output",
-          data: {
-            output: {
-              transaction_hash: input.outpoint_transaction_hash,
-              output_index: input.outpoint_index,
-              placeholder: true,
-            }
-          },
-          parentId: input.outpoint_transaction_hash,
-          extent: "parent",
-          position: {
-            x: 270,
-            y: 45 + Number(input.outpoint_index) * 85,
-          },
-          style: { width: 180, padding: "0px", border: "none" },
-        }))
-      )
-
-      
-
-      addNodes(transaction.outputs.map((output) => ({
-        id: `${output.transaction_hash}-output-${output.output_index}`,
-        type: "output",
-        data: {
-          output: output,
-        },
-        parentId: output.transaction_hash,
-        extent: "parent",
-        position: {
-          x: 270,
-          y: 45 + Number(output.output_index) * 85
-        },
-        style: { width: 180, padding: "0px", border: "none" },
-      })))
-
+      await fetchAndDraw({
+        transactionHash: searchQuery,
+        addNodes,
+        addEdges
+      });
     } catch (err) {
       setError("Failed to fetch transaction. Please check your input and try again.")
       console.error(err)
@@ -140,6 +74,12 @@ export function ChartPage() {
     }
   }
 
+  const handleNodesChange = (changes: NodeChange[]) => {
+    console.log(changes)
+    onNodesChange(changes)
+  }
+
+  
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -169,11 +109,12 @@ export function ChartPage() {
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
-          onNodesChange={onNodesChange}
+          onNodesChange={handleNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           fitView
-        />
+          />
+        
         </div>
 
       </div>
