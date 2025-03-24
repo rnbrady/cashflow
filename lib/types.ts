@@ -18,6 +18,7 @@ export interface SpentBy {
 }
 
 export interface Output {
+  transaction_hash: string;
   output_index: string;
   value_satoshis: string;
   locking_bytecode: string;
@@ -29,6 +30,9 @@ export interface Output {
 }
 
 export interface Input {
+  transaction: {
+    hash: string;
+  };
   input_index: string;
   outpoint_transaction_hash: string;
   outpoint_index: string;

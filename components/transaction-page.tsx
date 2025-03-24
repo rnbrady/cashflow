@@ -8,7 +8,7 @@ import {
   parseScript,
   getScriptType,
   ValueUnit
-} from "@/lib/transaction-utils";
+} from "@/lib/utils";
 import { Transaction } from "@/lib/types";
 
 interface TransactionPageProps {
@@ -200,7 +200,7 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                       <div>
                         <p className="text-sm text-gray-600">Type</p>
                         <p className="text-sm">
-                          {getScriptType(output.locking_bytecode_pattern)}
+                          {getScriptType(output.locking_bytecode_pattern, true)}
                         </p>
                       </div>
                       {output.spent_by?.[0] && (

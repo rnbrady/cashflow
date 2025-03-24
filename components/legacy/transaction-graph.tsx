@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import ReactFlow, { MiniMap, Controls, Background, useNodesState, useEdgesState, MarkerType, Panel } from "reactflow"
+import ReactFlow, { Controls, Background, useNodesState, useEdgesState, MarkerType } from "reactflow"
 import "reactflow/dist/style.css"
 import { fetchTransactionData, getDefaultTransactions } from "@/lib/legacy-api"
 
@@ -9,30 +9,7 @@ import { fetchTransactionData, getDefaultTransactions } from "@/lib/legacy-api"
 import TransactionNode from "@/components/legacy/nodes/transaction-node"
 import InputNode from "@/components/legacy/nodes/input-node"
 import OutputNode from "@/components/legacy/nodes/output-node"
-
-// Generate a color from a hash string
-const hashToColor = (hash) => {
-  if (!hash) return "#6366f1" // Default indigo color
-
-  // Take the first 6 characters of the hash and use as a hex color
-  const color = `#${hash.substring(0, 6)}`
-
-  // Check if it's a valid hex color
-  if (/^#[0-9A-F]{6}$/i.test(color)) {
-    return color
-  }
-
-  // If not valid, generate a color based on hash sum
-  let sum = 0
-  for (let i = 0; i < hash.length; i++) {
-    sum += hash.charCodeAt(i)
-  }
-
-  // Generate hue based on hash (0-360)
-  const hue = sum % 360
-  // Use a fixed saturation and lightness for good visibility
-  return `hsl(${hue}, 70%, 60%)`
-}
+import { hashToColor } from "@/lib/utils"
 
 const nodeTypes = {
   transaction: TransactionNode,

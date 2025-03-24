@@ -15,6 +15,9 @@ export const GET_TRANSACTION_DETAILS = `
         }
       }
       inputs {
+        transaction {
+          hash
+        }
         input_index
         outpoint_transaction_hash
         outpoint_index
@@ -23,6 +26,7 @@ export const GET_TRANSACTION_DETAILS = `
         unlocking_bytecode
       }
       outputs {
+        transaction_hash
         output_index
         value_satoshis
         locking_bytecode
