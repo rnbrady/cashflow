@@ -1,4 +1,4 @@
-import TransactionExplorer from "@/components/legacy/transaction-explorer"
+import TransactionExplorer from "@/components/legacy/explorer-page"
 
 export default function Home() {
   return (

@@ -5,7 +5,7 @@ import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import TransactionGraph from "@/components/legacy/transaction-graph"
-import TransactionDetails from "@/components/legacy/transaction-details"
+import TransactionDetails from "@/components/legacy/transaction-side-panel"
 import { fetchTransactionData } from "@/lib/legacy-api"
 
 export default function TransactionExplorer() {
@@ -15,7 +15,7 @@ export default function TransactionExplorer() {
   const [error, setError] = useState("")
   const [selectedTransaction, setSelectedTransaction] = useState(null)
 
-  const handleSearch = async (e) => {
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!searchQuery) return
 
