@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { addEdge, applyNodeChanges, applyEdgeChanges } from '@xyflow/react';
+import { addEdge, applyNodeChanges, applyEdgeChanges, type Node } from '@xyflow/react';
  
 import { type ChartState } from './types';
  
@@ -27,7 +27,10 @@ const useStore = create<ChartState>((set, get) => ({
   },
   setEdges: (edges) => {
     set({ edges });
-  }
+  },
+  addNode: (node: Node) => {
+    set({ nodes: [...get().nodes, node] });
+  },
 }));
  
 export default useStore;

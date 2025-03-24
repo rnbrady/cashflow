@@ -11,7 +11,7 @@ import {TransactionNode} from "@/components/nodes/transaction"
 import { InputNode } from "@/components/nodes/input"
 import { OutputNode } from "@/components/nodes/output"
 import useStore from '@/lib/store';
-import { ChartState } from '@/lib/types';
+import { ChartState, Transaction } from '@/lib/types';
 import "@xyflow/react/dist/style.css"
 
 const nodeTypes = {
@@ -26,6 +26,7 @@ const selector = (state: ChartState) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
+  addNode: state.addNode,
 });
 
 
@@ -33,7 +34,7 @@ export function ChartPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useStore(
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode } = useStore(
     useShallow(selector),
   );
 
@@ -46,8 +47,18 @@ export function ChartPage() {
 
     try {
       // Search for transaction by hash
-      const data = await fetchTransactionData(searchQuery)
-      
+      const transaction: Transaction = await fetchTransactionData(searchQuery)
+      addNode({
+        id: transaction.hash,
+        type: "transaction",
+        data: {
+          transaction: transaction,
+        },
+        position: {
+          x: 0,
+          y: 0,
+        },
+      })
     } catch (err) {
       setError("Failed to fetch transaction. Please check your input and try again.")
       console.error(err)
