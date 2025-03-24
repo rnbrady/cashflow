@@ -1,10 +1,13 @@
-import { memo } from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { truncateHash, getContrastColor, hashToColor } from "@/lib/utils"
 import { Transaction } from "@/lib/types"
+import { Node, NodeProps } from "@xyflow/react"
 
+export type TransactionNode = Node<{
+  transaction: Transaction
+}, 'transaction'>
 
-function TransactionNode({ transaction }: { transaction: Transaction, isConnectable: boolean }) {
+export function TransactionNode({ data: { transaction } }: NodeProps<TransactionNode>) {
   const color = hashToColor(transaction.hash);
   const textColor = getContrastColor(color)
   
@@ -46,5 +49,4 @@ function TransactionNode({ transaction }: { transaction: Transaction, isConnecta
   )
 }
 
-export default memo(TransactionNode)
 

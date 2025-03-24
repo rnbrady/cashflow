@@ -1,12 +1,14 @@
-import { memo } from "react"
-import { Handle, Position } from "reactflow"
+import { Handle, NodeProps, Position, Node } from "@xyflow/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Output } from "@/lib/types"
 import { hashToColor } from "@/lib/utils"
 import { getScriptType, tryDecodeCashAddress } from "@/lib/utils"
 
+export type OutputNode = Node<{
+  output: Output
+}, 'output'>
 
-function OutputNode({ output, isConnectable }: { output: Output, isConnectable: boolean }) {
+export function OutputNode({ data: { output }, isConnectable }: NodeProps<OutputNode>) {
   const borderColor = output.transaction_hash ? hashToColor(output.transaction_hash) : "#6366f1"
 
   const scriptType = getScriptType(output.locking_bytecode_pattern)
@@ -71,6 +73,3 @@ function OutputNode({ output, isConnectable }: { output: Output, isConnectable: 
     </TooltipProvider>
   )
 }
-
-export default memo(OutputNode)
-

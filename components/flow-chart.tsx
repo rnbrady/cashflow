@@ -2,14 +2,12 @@
 
 import { ReactFlow } from '@xyflow/react';
 import { useShallow } from 'zustand/react/shallow';
-
-import TransactionNode from "@/components/legacy/nodes/transaction-node"
-import InputNode from "@/components/legacy/nodes/input-node"
-import OutputNode from "@/components/legacy/nodes/output-node"
+import TransactionNode from "@/components/nodes/transaction"
+import InputNode from "@/components/nodes/input"
+import OutputNode from "@/components/nodes/output"
 import useStore from '@/lib/store';
-
-import "@xyflow/react/dist/style.css"
 import { ChartState } from '@/lib/types';
+import "@xyflow/react/dist/style.css"
 
 const nodeTypes = {
   transaction: TransactionNode,
@@ -34,6 +32,7 @@ function FlowChart() {
     <ReactFlow
       nodes={nodes}
       edges={edges}
+      nodeTypes={nodeTypes}
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}

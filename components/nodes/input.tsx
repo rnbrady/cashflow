@@ -1,10 +1,13 @@
-import { memo } from "react"
-import { Handle, Position } from "reactflow"
+import { Handle, Position, Node, NodeProps } from "@xyflow/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Input } from "@/lib/types"
 import { hashToColor, truncateHash } from "@/lib/utils"
 
-function InputNode({ input, isConnectable }: { input: Input, isConnectable: boolean }) {
+export type InputNode = Node<{
+  input: Input
+}, 'input'> 
+
+export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNode>) {
   const borderColor = input.outpoint_transaction_hash ? hashToColor(input.outpoint_transaction_hash) : "#6366f1"
 
   const isCoinbase = input.outpoint_transaction_hash === "0000000000000000000000000000000000000000000000000000000000000000"
@@ -81,6 +84,3 @@ function InputNode({ input, isConnectable }: { input: Input, isConnectable: bool
     </TooltipProvider>
   )
 }
-
-export default memo(InputNode)
-

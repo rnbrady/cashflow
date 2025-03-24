@@ -36,9 +36,6 @@ export default function ExplorerPage() {
     }
   }
 
-  const handleTransactionSelect = useCallback((txData) => {
-    setSelectedTransaction(txData)
-  }, [])
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -64,7 +61,7 @@ export default function ExplorerPage() {
 
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 h-full">
-          <FlowChart transactionData={transactionData} onTransactionSelect={handleTransactionSelect} />
+          <FlowChart />
         </div>
 
       </div>
