@@ -1,10 +1,10 @@
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { truncateHash, getContrastColor, hashToColor } from "@/lib/utils"
-import { Transaction } from "@/lib/types"
+import { Transaction, PlaceholderTransaction } from "@/lib/types"
 import { Node, NodeProps } from "@xyflow/react"
 
 export type TransactionNode = Node<{
-  transaction: Transaction
+  transaction: Transaction | PlaceholderTransaction
 }, 'transaction'>
 
 export function TransactionNode({ data: { transaction } }: NodeProps<TransactionNode>) {
@@ -12,8 +12,8 @@ export function TransactionNode({ data: { transaction } }: NodeProps<Transaction
   const textColor = getContrastColor(color)
   
   // Calculate height based on number of inputs and outputs
-  const numInputs = transaction.inputs?.length || 0
-  const numOutputs = transaction.outputs?.length || 0
+  const numInputs = transaction.inputs?.length || 1
+  const numOutputs = transaction.outputs?.length || 1
   const contentHeight = Math.max(numInputs, numOutputs) * 82 + 18
 
   return (
@@ -31,7 +31,7 @@ export function TransactionNode({ data: { transaction } }: NodeProps<Transaction
               color: textColor,
             }}
           >
-            <div className="text-sm font-medium">{truncateHash(transaction.hash)}</div>
+            <div className="text-sm font-medium">{truncateHash(transaction.hash, 24)}</div>
           </div>
 
           {/* Transaction content - will contain child nodes */}

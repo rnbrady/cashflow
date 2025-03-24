@@ -16,7 +16,9 @@ export function formatTimestamp(timestamp: string): string {
   return new Date(parseInt(timestamp) * 1000).toLocaleString();
 }
 
-export function tryDecodeCashAddress(lockingBytecode: string): string {
+export function tryDecodeCashAddress(lockingBytecode: string | undefined): string {
+  if (!lockingBytecode) return 'Unknown';
+
   try {
     // Remove \x prefix if present
     const cleanHex = lockingBytecode.replace(/^\\x/, '');
@@ -76,7 +78,9 @@ export function parseScript(lockingBytecode: string): string {
   }
 }
 
-export function getScriptType(lockingBytecodePattern: string, fullName: boolean = false): string {
+export function getScriptType(lockingBytecodePattern: string | undefined, fullName: boolean = false): string {
+  if (!lockingBytecodePattern) return 'Unknown';
+
   try {
     const script = lockingBytecodePattern.replace(/^\\x/, '');
 
@@ -142,9 +146,10 @@ export const hashToColor = (hash: string | undefined | null) => {
   return `hsl(${hue}, 70%, 60%)`
 }
 
-export const truncateHash = (hash: string) => {
+export const truncateHash = (hash: string | undefined | null, length: number = 4) => {
   if (!hash) return ""
-  return `${hash.substring(0, 4)}...${hash.substring(hash.length - 4)}`
+  const cleanHash = hash.replace(/^\\x/, '');
+  return `${cleanHash.substring(0, length)}...${cleanHash.substring(cleanHash.length - length)}`
 }
 
 // Helper to generate a contrasting text color based on background

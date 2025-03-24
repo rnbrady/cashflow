@@ -1,11 +1,11 @@
 import { Handle, NodeProps, Position, Node } from "@xyflow/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Output } from "@/lib/types"
+import { Output, PlaceholderOutput } from "@/lib/types"
 import { hashToColor } from "@/lib/utils"
 import { getScriptType, tryDecodeCashAddress } from "@/lib/utils"
 
 export type OutputNode = Node<{
-  output: Output
+  output: Output | PlaceholderOutput
 }, 'output'>
 
 export function OutputNode({ data: { output }, isConnectable }: NodeProps<OutputNode>) {
@@ -67,7 +67,7 @@ export function OutputNode({ data: { output }, isConnectable }: NodeProps<Output
           position={Position.Right}
           isConnectable={isConnectable}
           className="w-3 h-3 bg-green-500"
-          style={{ right: -8 }}
+          style={{ right: -4 }}
         />
       </div>
     </TooltipProvider>

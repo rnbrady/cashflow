@@ -6,9 +6,9 @@ export interface ChartState {
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
-  addNode: (node: Node) => void;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
+  addNodes: (nodes: Node[]) => void;
 }
 
 export interface Block {
@@ -33,14 +33,16 @@ export interface SpentBy {
 export interface Output {
   transaction_hash: string;
   output_index: string;
-  value_satoshis: string;
   locking_bytecode: string;
   locking_bytecode_pattern: string;
-  nonfungible_token_capability: string | null;
-  nonfungible_token_commitment: string | null;
-  token_category: string | null;
+  value_satoshis: string;
+  nonfungible_token_capability?: string | null;
+  nonfungible_token_commitment?: string | null;
+  token_category?: string | null;
   spent_by?: SpentBy[];
 }
+
+export type PlaceholderOutput = { placeholder: true } & Partial<Output>
 
 export interface Input {
   transaction: {
@@ -49,10 +51,13 @@ export interface Input {
   input_index: string;
   outpoint_transaction_hash: string;
   outpoint_index: string;
-  sequence_number: string;
   value_satoshis: string | null;
-  unlocking_bytecode?: string;
+  sequence_number: string;
+  unlocking_bytecode: string;
+  placeholder: boolean;
 }
+
+export type PlaceholderInput = { placeholder: true } & Partial<Input>
 
 export interface Transaction {
   hash: string;
@@ -65,6 +70,8 @@ export interface Transaction {
   inputs: Input[];
   outputs: Output[];
 }
+
+export type PlaceholderTransaction = { placeholder: true } & Partial<Transaction>
 
 export interface ParentTransaction {
   size_bytes: string;

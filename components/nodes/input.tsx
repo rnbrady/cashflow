@@ -1,10 +1,10 @@
 import { Handle, Position, Node, NodeProps } from "@xyflow/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Input } from "@/lib/types"
+import { Input, PlaceholderInput } from "@/lib/types"
 import { hashToColor, truncateHash } from "@/lib/utils"
 
 export type InputNode = Node<{
-  input: Input
+  input: Input | PlaceholderInput
 }, 'input'> 
 
 export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNode>) {
@@ -22,7 +22,7 @@ export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNod
           position={Position.Left}
           isConnectable={isConnectable}
           className="w-3 h-3 bg-blue-500"
-          style={{ left: -8 }}
+          style={{ left: -4 }}
         />
 
         <Tooltip>

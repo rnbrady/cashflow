@@ -26,7 +26,7 @@ const selector = (state: ChartState) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
-  addNode: state.addNode,
+  addNodes: state.addNodes,
 });
 
 
@@ -34,7 +34,7 @@ export function ChartPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode } = useStore(
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNodes } = useStore(
     useShallow(selector),
   );
 
@@ -48,7 +48,7 @@ export function ChartPage() {
     try {
       // Search for transaction by hash
       const transaction: Transaction = await fetchTransactionData(searchQuery)
-      addNode({
+      addNodes([{
         id: transaction.hash,
         type: "transaction",
         data: {
@@ -58,7 +58,80 @@ export function ChartPage() {
           x: 0,
           y: 0,
         },
-      })
+        style: { width: 450 },
+      }])
+
+      addNodes(transaction.inputs.map((input) => ({
+        id: `${input.transaction.hash}-input-${input.input_index}`,
+        type: "input",
+        data: {
+          input: input,
+        },
+        parentId: input.transaction.hash,
+        extent: "parent",
+        position: {
+          x: 0,
+          y: 45 + Number(input.input_index) * 85
+        },
+        style: { width: 180, padding: "0px", border: "none" },
+      })))
+
+      addNodes(
+        transaction.inputs.map((input) => ({
+          id: `${input.outpoint_transaction_hash}`,
+          type: "transaction",
+          data: {
+            transaction: {
+              hash: input.outpoint_transaction_hash,
+              placeholder: true,
+            }
+          },
+          position: {
+            x: -500,
+            y: 0,
+          },
+          style: { width: 450 },
+        }))
+      )
+
+      addNodes(
+        transaction.inputs.map((input) => ({
+          id: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
+          type: "output",
+          data: {
+            output: {
+              transaction_hash: input.outpoint_transaction_hash,
+              output_index: input.outpoint_index,
+              placeholder: true,
+            }
+          },
+          parentId: input.outpoint_transaction_hash,
+          extent: "parent",
+          position: {
+            x: 270,
+            y: 45 + Number(input.outpoint_index) * 85,
+          },
+          style: { width: 180, padding: "0px", border: "none" },
+        }))
+      )
+
+      
+
+      addNodes(transaction.outputs.map((output) => ({
+        id: `${output.transaction_hash}-output-${output.output_index}`,
+        type: "output",
+        data: {
+          output: output,
+        },
+        parentId: output.transaction_hash,
+        extent: "parent",
+        position: {
+          x: 270,
+          y: 45 + Number(output.output_index) * 85
+        },
+        style: { width: 180, padding: "0px", border: "none" },
+      })))
+
     } catch (err) {
       setError("Failed to fetch transaction. Please check your input and try again.")
       console.error(err)
