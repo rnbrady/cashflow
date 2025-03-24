@@ -20,6 +20,9 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.1.8
         version: 1.1.8(@types/react-dom@19.0.4(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      '@xyflow/react':
+        specifier: ^12.4.4
+        version: 12.4.4(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       chaingraph-ts:
         specifier: ^0.2.3
         version: 0.2.3(graphql@16.10.0)(typescript@5.8.2)
@@ -53,6 +56,9 @@ importers:
       tw-animate-css:
         specifier: ^1.2.4
         version: 1.2.4
+      zustand:
+        specifier: ^5.0.3
+        version: 5.0.3(@types/react@19.0.12)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0))
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3
@@ -946,6 +952,15 @@ packages:
 
   '@urql/core@5.1.1':
     resolution: {integrity: sha512-aGh024z5v2oINGD/In6rAtVKTm4VmQ2TxKQBAtk2ZSME5dunZFcjltw4p5ENQg+5CBhZ3FHMzl0Oa+rwqiWqlg==}
+
+  '@xyflow/react@12.4.4':
+    resolution: {integrity: sha512-9RZ9dgKZNJOlbrXXST5HPb5TcXPOIDGondjwcjDro44OQRPl1E0ZRPTeWPGaQtVjbg4WpR4BUYwOeshNI2TuVg==}
+    peerDependencies:
+      react: '>=17'
+      react-dom: '>=17'
+
+  '@xyflow/system@0.0.52':
+    resolution: {integrity: sha512-pJBMaoh/GEebIABWEIxAai0yf57dm+kH7J/Br+LnLFPuJL87Fhcmm4KFWd/bCUy/kCWUg+2/yFAGY0AUHRPOnQ==}
 
   acorn-jsx@5.3.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -2223,6 +2238,24 @@ packages:
       react:
         optional: true
 
+  zustand@5.0.3:
+    resolution: {integrity: sha512-14fwWQtU3pH4dE0dOpdMiWjddcH+QzKIgk1cl8epwSE7yag43k/AD/m4L6+K7DytAOr9gGBe3/EXj9g7cdostg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+
 snapshots:
 
   '@0no-co/graphql.web@1.1.2(graphql@16.10.0)':
@@ -3055,6 +3088,27 @@ snapshots:
       wonka: 6.3.5
     transitivePeerDependencies:
       - graphql
+
+  '@xyflow/react@12.4.4(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+    dependencies:
+      '@xyflow/system': 0.0.52
+      classcat: 5.0.5
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      zustand: 4.5.6(@types/react@19.0.12)(react@19.0.0)
+    transitivePeerDependencies:
+      - '@types/react'
+      - immer
+
+  '@xyflow/system@0.0.52':
+    dependencies:
+      '@types/d3-drag': 3.0.7
+      '@types/d3-selection': 3.0.11
+      '@types/d3-transition': 3.0.9
+      '@types/d3-zoom': 3.0.8
+      d3-drag: 3.0.0
+      d3-selection: 3.0.0
+      d3-zoom: 3.0.0
 
   acorn-jsx@5.3.2(acorn@8.14.1):
     dependencies:
@@ -4611,3 +4665,9 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.0.12
       react: 19.0.0
+
+  zustand@5.0.3(@types/react@19.0.12)(react@19.0.0)(use-sync-external-store@1.4.0(react@19.0.0)):
+    optionalDependencies:
+      '@types/react': 19.0.12
+      react: 19.0.0
+      use-sync-external-store: 1.4.0(react@19.0.0)

@@ -4,8 +4,7 @@ import { useState, useCallback } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import TransactionGraph from "@/components/legacy/transaction-graph"
-// import TransactionDetails from "@/components/legacy/transaction-side-panel"
+import FlowChart from "@/components/flow-chart"
 import { fetchTransactionData } from "@/lib/chaingraph-api"
 
 export default function ExplorerPage() {
@@ -65,15 +64,9 @@ export default function ExplorerPage() {
 
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 h-full">
-          <TransactionGraph transactionData={transactionData} onTransactionSelect={handleTransactionSelect} />
+          <FlowChart transactionData={transactionData} onTransactionSelect={handleTransactionSelect} />
         </div>
 
-        <div className="w-96 border-l bg-white overflow-y-auto">
-          <div className="p-4">
-            <h2 className="text-lg font-semibold mb-4">Transaction Details</h2>
-            {/* <TransactionDetails transaction={selectedTransaction} /> */}
-          </div>
-        </div>
       </div>
     </div>
   )
