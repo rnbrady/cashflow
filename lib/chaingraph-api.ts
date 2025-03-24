@@ -89,6 +89,9 @@ const mockTransactions: Record<string, Transaction> = {
     ],
     "inputs": [
       {
+        "transaction": {
+          "hash": "\\x5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691"
+        },
         "input_index": "0",
         "outpoint_transaction_hash": "\\x6ee7485b44c0bdad98598c0b070d5cf8b3ad5f597b155b2e3f445134e6a4d32c",
         "outpoint_index": "1",
@@ -99,6 +102,7 @@ const mockTransactions: Record<string, Transaction> = {
     ],
     "outputs": [
       {
+        "transaction_hash": "\\x5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691",
         "output_index": "0",
         "value_satoshis": "1000",
         "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",
@@ -116,6 +120,7 @@ const mockTransactions: Record<string, Transaction> = {
         ]
       },
       {
+        "transaction_hash": "\\x5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691",
         "output_index": "1",
         "value_satoshis": "2355076",
         "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",
@@ -152,6 +157,9 @@ const mockTransactions: Record<string, Transaction> = {
     ],
     "inputs": [
       {
+        "transaction": {
+          "hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf"
+        },
         "input_index": "0",
         "outpoint_transaction_hash": "\\x5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691",
         "outpoint_index": "0",
@@ -160,6 +168,9 @@ const mockTransactions: Record<string, Transaction> = {
         "unlocking_bytecode": "\\x414900bddcf2342c3ad1dda9aa8034ffbd6e175c74844b6e3940eaf380d3071cfaef4bcb7a19f4fce0f9998b2ee75787c96fd6e0b6f0f21202f8b82de69d33819b412103ef5d6aa43de4c9bc8a1b7f2c2e325e0b9b2866782779248224be4d2c0c630f5d"
       },
       {
+        "transaction": {
+          "hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf"
+        },
         "input_index": "1",
         "outpoint_transaction_hash": "\\x105494c7e477172f563ba8baf3e890c2ad20fd6cabbf67a28c59f74d753ee494",
         "outpoint_index": "0",
@@ -168,6 +179,9 @@ const mockTransactions: Record<string, Transaction> = {
         "unlocking_bytecode": "\\x4124d82c4b3deb834fa4233bf8682a203294d4e23a2e8492abf57e00954d9c4ef08d6372a02dfab3a112ecd71ea2c86cc68c63316e0a9ac8d3075ba7066ea9748d412103ef5d6aa43de4c9bc8a1b7f2c2e325e0b9b2866782779248224be4d2c0c630f5d"
       },
       {
+        "transaction": {
+          "hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf"
+        },
         "input_index": "2",
         "outpoint_transaction_hash": "\\x105494c7e477172f563ba8baf3e890c2ad20fd6cabbf67a28c59f74d753ee494",
         "outpoint_index": "1",
@@ -178,6 +192,7 @@ const mockTransactions: Record<string, Transaction> = {
     ],
     "outputs": [
       {
+        "transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
         "output_index": "0",
         "value_satoshis": "1000",
         "locking_bytecode": "\\xa91453be7acaf98c40b09a65f0566d13939cb247e93487",
@@ -195,6 +210,7 @@ const mockTransactions: Record<string, Transaction> = {
         ]
       },
       {
+        "transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
         "output_index": "1",
         "value_satoshis": "1000",
         "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",
@@ -212,6 +228,7 @@ const mockTransactions: Record<string, Transaction> = {
         ]
       },
       {
+        "transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
         "output_index": "2",
         "value_satoshis": "0",
         "locking_bytecode": "\\x6a0442434d5220cb35a401d6a0124952433ea3b5caed1ce7dc421420a083ccc31916d98bce1f904c506e667473746f726167652e6c696e6b2f697066732f6261666b726569676c6777736164767661636a657665717a36756f32347633693434376f6565666261756362347a71797a63336d797874713773613b6261666b726569676c6777736164767661636a657665717a36756f32347633693434376f6565666261756362347a71797a63336d797874713773617a",
@@ -222,6 +239,7 @@ const mockTransactions: Record<string, Transaction> = {
         "spent_by": []
       },
       {
+        "transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
         "output_index": "3",
         "value_satoshis": "2353018",
         "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",
@@ -258,6 +276,9 @@ const mockTransactions: Record<string, Transaction> = {
     ],
     "inputs": [
       {
+        "transaction": {
+          "hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5"
+        },
         "input_index": "0",
         "outpoint_transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
         "outpoint_index": "0",
@@ -266,6 +287,9 @@ const mockTransactions: Record<string, Transaction> = {
         "unlocking_bytecode": "\\x51302094e43e754df7598ca267bfab6cfd20adc290e8f3baa83b562f1777e4c794541051ce8851d0009d6300cdc0c7886851"
       },
       {
+        "transaction": {
+          "hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5"
+        },
         "input_index": "1",
         "outpoint_transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
         "outpoint_index": "1",
@@ -274,6 +298,9 @@ const mockTransactions: Record<string, Transaction> = {
         "unlocking_bytecode": "\\x41087d42a4e6e929038e9b237fbfb77e55c1284ce693760a33090810ea70f65c10aa0660a85c85d5bfa7f3522eec670fb6a2c5f039bd2d4165c0ead71d66a13e57412103ef5d6aa43de4c9bc8a1b7f2c2e325e0b9b2866782779248224be4d2c0c630f5d"
       },
       {
+        "transaction": {
+          "hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5"
+        },
         "input_index": "2",
         "outpoint_transaction_hash": "\\x3be0910b723bf5d338b2c5b2dfca8cf2b5c4788e6975bdc13408005dde96668d",
         "outpoint_index": "1",
@@ -284,6 +311,7 @@ const mockTransactions: Record<string, Transaction> = {
     ],
     "outputs": [
       {
+        "transaction_hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
         "output_index": "0",
         "value_satoshis": "1000",
         "locking_bytecode": "\\xa91453be7acaf98c40b09a65f0566d13939cb247e93487",
@@ -301,6 +329,7 @@ const mockTransactions: Record<string, Transaction> = {
         ]
       },
       {
+        "transaction_hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
         "output_index": "1",
         "value_satoshis": "1000",
         "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",
@@ -318,6 +347,7 @@ const mockTransactions: Record<string, Transaction> = {
         ]
       },
       {
+        "transaction_hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
         "output_index": "2",
         "value_satoshis": "1000",
         "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",
@@ -335,6 +365,7 @@ const mockTransactions: Record<string, Transaction> = {
         ]
       },
       {
+        "transaction_hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
         "output_index": "3",
         "value_satoshis": "2349488",
         "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",

@@ -5,7 +5,7 @@ import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import TransactionGraph from "@/components/legacy/transaction-graph"
-import TransactionDetails from "@/components/legacy/transaction-side-panel"
+// import TransactionDetails from "@/components/legacy/transaction-side-panel"
 import { fetchTransactionData } from "@/lib/chaingraph-api"
 
 export default function ExplorerPage() {
@@ -71,7 +71,7 @@ export default function ExplorerPage() {
         <div className="w-96 border-l bg-white overflow-y-auto">
           <div className="p-4">
             <h2 className="text-lg font-semibold mb-4">Transaction Details</h2>
-            <TransactionDetails transaction={selectedTransaction} />
+            {/* <TransactionDetails transaction={selectedTransaction} /> */}
           </div>
         </div>
       </div>

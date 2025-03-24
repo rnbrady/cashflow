@@ -1,4 +1,4 @@
-import ExplorerPage from "@/components/legacy/explorer-page"
+import ExplorerPage from "@/components/explorer-page"
 
 export default function Home() {
   return (
