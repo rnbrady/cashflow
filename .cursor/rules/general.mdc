@@ -1,7 +1,7 @@
 ---
-description: General rules for this project
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 # Next.js rules
 

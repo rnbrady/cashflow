@@ -27,7 +27,7 @@ const useStore = create<ChartState>((set, get) => ({
   },
   setEdges: (edges) => {
     set({ edges });
-  },
+  }
 }));
  
 export default useStore;

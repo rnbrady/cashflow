@@ -1,18 +1,41 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import FlowChart from "@/components/flow-chart"
 import { fetchTransactionData } from "@/lib/chaingraph-api"
+import { ReactFlow } from '@xyflow/react';
+import { useShallow } from 'zustand/react/shallow';
+import {TransactionNode} from "@/components/nodes/transaction"
+import { InputNode } from "@/components/nodes/input"
+import { OutputNode } from "@/components/nodes/output"
+import useStore from '@/lib/store';
+import { ChartState } from '@/lib/types';
+import "@xyflow/react/dist/style.css"
 
-export default function ExplorerPage() {
+const nodeTypes = {
+  transaction: TransactionNode,
+  input: InputNode,
+  output: OutputNode,
+}
+ 
+const selector = (state: ChartState) => ({
+  nodes: state.nodes,
+  edges: state.edges,
+  onNodesChange: state.onNodesChange,
+  onEdgesChange: state.onEdgesChange,
+  onConnect: state.onConnect,
+});
+
+
+export function ChartPage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [transactionData, setTransactionData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [selectedTransaction, setSelectedTransaction] = useState(null)
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useStore(
+    useShallow(selector),
+  );
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -20,14 +43,11 @@ export default function ExplorerPage() {
 
     setLoading(true)
     setError("")
-    setTransactionData(null)
-    setSelectedTransaction(null)
 
     try {
       // Search for transaction by hash
       const data = await fetchTransactionData(searchQuery)
-      setTransactionData(data)
-      setSelectedTransaction(data)
+      
     } catch (err) {
       setError("Failed to fetch transaction. Please check your input and try again.")
       console.error(err)
@@ -61,7 +81,15 @@ export default function ExplorerPage() {
 
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 h-full">
-          <FlowChart />
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          fitView
+        />
         </div>
 
       </div>
