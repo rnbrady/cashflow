@@ -8,7 +8,7 @@ import TransactionGraph from "@/components/legacy/transaction-graph"
 import TransactionDetails from "@/components/legacy/transaction-side-panel"
 import { fetchTransactionData } from "@/lib/legacy-api"
 
-export default function TransactionExplorer() {
+export default function ExplorerPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [transactionData, setTransactionData] = useState(null)
   const [loading, setLoading] = useState(false)

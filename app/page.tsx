@@ -1,9 +1,9 @@
-import TransactionExplorer from "@/components/legacy/explorer-page"
+import ExplorerPage from "@/components/legacy/explorer-page"
 
 export default function Home() {
   return (
     <main className="h-screen overflow-hidden">
-      <TransactionExplorer />
+      <ExplorerPage />
     </main>
   )
 }
