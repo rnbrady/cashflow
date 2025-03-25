@@ -1,25 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { Search } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { NodeChange, ReactFlow, NodeMouseHandler } from '@xyflow/react';
 import { useShallow } from 'zustand/react/shallow';
+import { NodeChange, ReactFlow, NodeMouseHandler } from '@xyflow/react';
+import "@xyflow/react/dist/style.css"
+
+import { useStore, ChartState } from '@/lib/store';
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { TransactionNode } from "@/components/nodes/transaction"
 import { InputNode } from "@/components/nodes/input"
 import { OutputNode } from "@/components/nodes/output"
-import { useStore, type ChartState } from '@/lib/store';
-import "@xyflow/react/dist/style.css"
 import { fetchAndDraw } from "@/lib/fetch-and-draw"
 
-
-const nodeTypes = {
-  transaction: TransactionNode,
-  input: InputNode,
-  output: OutputNode,
-}
- 
 const selector = (state: ChartState) => ({
   nodes: state.nodes,
   edges: state.edges,
@@ -31,6 +25,11 @@ const selector = (state: ChartState) => ({
   layout: state.layout,
 });
 
+const nodeTypes = {
+  transaction: TransactionNode,
+  input: InputNode,
+  output: OutputNode,
+} 
 
 export function ChartPage() {
   const [searchQuery, setSearchQuery] = useState("5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691")
@@ -69,12 +68,12 @@ export function ChartPage() {
     }
   }
 
-  const handleNodesChange = (changes: NodeChange[]) => {
+  const handleNodesChange = useCallback((changes: NodeChange[]) => {
     console.log(changes)
     onNodesChange(changes)
-  }
+  }, [onNodesChange])
 
-  const handleNodeClick: NodeMouseHandler = (event, node) => {
+  const handleNodeClick: NodeMouseHandler = useCallback((event, node) => {
     event.preventDefault();
     console.log(node)
     if (node.type === 'transaction' && node.id) {
@@ -87,12 +86,12 @@ export function ChartPage() {
         console.error(err);
       });
     }
-  };
+  }, [addNodes, addEdges])
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <header className="bg-white border-b p-4 shadow-sm">
-        <h1 className="text-2xl font-bold text-gray-800">CashFlow Bitcoin Cash Explorer</h1>
+        <h1 className="text-2xl font-bold text-gray-800">Cashflow Bitcoin Cash Explorer</h1>
 
         <form onSubmit={handleSearch} className="flex gap-2 mt-4">
           <Input
@@ -130,9 +129,7 @@ export function ChartPage() {
           onNodeClick={handleNodeClick}
           fitView
           />
-        
         </div>
-
       </div>
     </div>
   )

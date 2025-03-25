@@ -1,16 +1,19 @@
+"use client"
+
+import React from "react"
+import { Node, NodeProps } from "@xyflow/react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { truncateHash, getContrastColor, hashToColor } from "@/lib/utils"
 import { Transaction } from "@/lib/types"
-import { Node, NodeProps } from "@xyflow/react"
-import React from "react"
-export type TransactionNode = Node<{
+
+type TransactionNode = Node<{
   transaction: Transaction
 } | {
   placeholder: true,
   transaction: Partial<Transaction>
 }, 'transaction'>
 
-export const TransactionNode = React.memo(({ data: { transaction } }: NodeProps<TransactionNode>) => {
+export function TransactionNode({ data: { transaction } }: NodeProps<TransactionNode>) {
   const color = hashToColor(transaction.hash);
   const textColor = getContrastColor(color)
   
@@ -50,6 +53,5 @@ export const TransactionNode = React.memo(({ data: { transaction } }: NodeProps<
       </div>
     </TooltipProvider>
   )
-})
+}
 
-TransactionNode.displayName = "TransactionNode"

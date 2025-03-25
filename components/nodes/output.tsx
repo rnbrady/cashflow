@@ -1,17 +1,19 @@
+"use client"
+
+import React from "react"
 import { Handle, NodeProps, Position, Node } from "@xyflow/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { hashToColor, getScriptType, tryDecodeCashAddress } from "@/lib/utils"
 import { Output } from "@/lib/types"
-import { hashToColor } from "@/lib/utils"
-import { getScriptType, tryDecodeCashAddress } from "@/lib/utils"
-import React from "react"
-export type OutputNode = Node<{
+
+type OutputNode = Node<{
   output: Output
   } | {
     placeholder: true,
     output: Partial<Output>
   }, 'output'>
 
-export const OutputNode = React.memo(({ data: { output }, isConnectable }: NodeProps<OutputNode>) => {
+export function OutputNode({ data: { output }, isConnectable }: NodeProps<OutputNode>) {
   const borderColor = output.transaction_hash ? hashToColor(output.transaction_hash) : "#6366f1"
 
   const scriptType = getScriptType(output.locking_bytecode_pattern)
@@ -75,6 +77,4 @@ export const OutputNode = React.memo(({ data: { output }, isConnectable }: NodeP
       </div>
     </TooltipProvider>
   )
-})
-
-OutputNode.displayName = "OutputNode"
+}
