@@ -4,9 +4,9 @@ import { useState } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { NodeChange, ReactFlow, useOnViewportChange, Viewport, type Node, type Edge } from '@xyflow/react';
+import { NodeChange, ReactFlow, useOnViewportChange, Viewport, type Node, NodeMouseHandler } from '@xyflow/react';
 import { useShallow } from 'zustand/react/shallow';
-import {TransactionNode} from "@/components/nodes/transaction"
+import { TransactionNode } from "@/components/nodes/transaction"
 import { InputNode } from "@/components/nodes/input"
 import { OutputNode } from "@/components/nodes/output"
 import { useStore, type ChartState } from '@/lib/store';
@@ -65,7 +65,7 @@ export function ChartPage() {
       await fetchAndDraw({
         transactionHash: searchQuery,
         addNodes,
-        addEdges
+        addEdges,
       });
     } catch (err) {
       setError("Failed to fetch transaction. Please check your input and try again.")
@@ -79,6 +79,21 @@ export function ChartPage() {
     console.log(changes)
     onNodesChange(changes)
   }
+
+  const handleNodeClick: NodeMouseHandler = (event, node) => {
+    event.preventDefault();
+    console.log(node)
+    if (node.type === 'transaction' && node.id) {
+      fetchAndDraw({
+        transactionHash: node.id,
+        addNodes,
+        addEdges,
+      }).catch(err => {
+        setError("Failed to fetch transaction. Please check your input and try again.");
+        console.error(err);
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
@@ -118,6 +133,7 @@ export function ChartPage() {
           onNodesChange={handleNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
+          onNodeClick={handleNodeClick}
           fitView
           />
         

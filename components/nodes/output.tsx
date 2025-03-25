@@ -1,12 +1,15 @@
 import { Handle, NodeProps, Position, Node } from "@xyflow/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Output, PlaceholderOutput } from "@/lib/types"
+import { Output } from "@/lib/types"
 import { hashToColor } from "@/lib/utils"
 import { getScriptType, tryDecodeCashAddress } from "@/lib/utils"
 
 export type OutputNode = Node<{
-  output: Output | PlaceholderOutput
-}, 'output'>
+  output: Output
+  } | {
+    placeholder: true,
+    output: Partial<Output>
+  }, 'output'>
 
 export function OutputNode({ data: { output }, isConnectable }: NodeProps<OutputNode>) {
   const borderColor = output.transaction_hash ? hashToColor(output.transaction_hash) : "#6366f1"

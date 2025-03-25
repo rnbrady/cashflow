@@ -1,10 +1,13 @@
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { truncateHash, getContrastColor, hashToColor } from "@/lib/utils"
-import { Transaction, PlaceholderTransaction } from "@/lib/types"
+import { Transaction } from "@/lib/types"
 import { Node, NodeProps } from "@xyflow/react"
 
 export type TransactionNode = Node<{
-  transaction: Transaction | PlaceholderTransaction
+  transaction: Transaction
+} | {
+  placeholder: true,
+  transaction: Partial<Transaction>
 }, 'transaction'>
 
 export function TransactionNode({ data: { transaction } }: NodeProps<TransactionNode>) {

@@ -6,7 +6,7 @@ import {
   OnNodesChange,
   OnEdgesChange,
   OnConnect,
-  type Node,
+  Node,
   type Edge,
   type Viewport
 } from '@xyflow/react';
@@ -61,10 +61,51 @@ export const useStore = create<ChartState>((set, get) => ({
     set({ edges });
   },
   addNodes: (nodes: Node[]) => {
-    set({ nodes: [...get().nodes, ...nodes] });
+    const currentNodes = get().nodes;
+    const updatedNodes = [...currentNodes];
+    
+    // Process each new node
+    nodes.forEach(newNode => {
+      // Check if a node with this ID already exists
+      const existingNodeIndex = updatedNodes.findIndex(node => node.id === newNode.id);
+      
+      console.log(newNode)
+
+      if (existingNodeIndex === -1) {
+        updatedNodes.push(newNode);
+      } else if (newNode.data.placeholder !== true) {
+        updatedNodes[existingNodeIndex] = {
+          ...updatedNodes[existingNodeIndex],
+          ...newNode,
+          position: updatedNodes[existingNodeIndex].position
+        };
+      }
+      
+    });
+    
+    set({ nodes: updatedNodes });
   },
   addEdges: (edges: Edge[]) => {
-    set({ edges: [...get().edges, ...edges] });
+    const currentEdges = get().edges;
+    const updatedEdges = [...currentEdges];
+    
+    // Process each new edge
+    edges.forEach(newEdge => {
+      // Check if an edge with the same source and target already exists
+      const existingEdgeIndex = updatedEdges.findIndex(
+        edge => edge.source === newEdge.source && edge.target === newEdge.target
+      );
+      
+      if (existingEdgeIndex === -1) {
+        // Add new edge
+        updatedEdges.push(newEdge);
+      } else {
+        // Update existing edge
+        updatedEdges[existingEdgeIndex] = newEdge;
+      }
+    });
+    
+    set({ edges: updatedEdges });
   },
   layout: () => {
     const { nodes, edges } = get();

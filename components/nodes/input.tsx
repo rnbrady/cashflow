@@ -1,10 +1,13 @@
 import { Handle, Position, Node, NodeProps } from "@xyflow/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { Input, PlaceholderInput } from "@/lib/types"
+import { Input } from "@/lib/types"
 import { hashToColor, truncateHash } from "@/lib/utils"
 
 export type InputNode = Node<{
-  input: Input | PlaceholderInput
+  input: Input
+} | {
+  placeholder: true,
+  input: Partial<Input>
 }, 'input'> 
 
 export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNode>) {

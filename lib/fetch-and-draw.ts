@@ -6,7 +6,7 @@ import { Edge, MarkerType, Node } from "@xyflow/react";
 export async function fetchAndDraw({
   transactionHash,
   addNodes,
-  addEdges
+  addEdges,
 }: {
   transactionHash: string;
   addNodes: (nodes: Node[]) => void;
@@ -49,8 +49,8 @@ export async function fetchAndDraw({
       data: {
         transaction: {
           hash: input.outpoint_transaction_hash,
-          placeholder: true,
-        }
+        },
+        placeholder: true,
       },
       position: {
         x: -500,
@@ -68,8 +68,8 @@ export async function fetchAndDraw({
         output: {
           transaction_hash: input.outpoint_transaction_hash,
           output_index: input.outpoint_index,
-          placeholder: true,
-        }
+        },
+        placeholder: true,
       },
       parentId: input.outpoint_transaction_hash,
       extent: "parent",
@@ -85,7 +85,6 @@ export async function fetchAndDraw({
     id: `${input.transaction.hash}-edge-${input.input_index}`,
     source: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
     target: `${input.transaction.hash}-input-${input.input_index}`,
-    type: "bezier",
     markerEnd: {
       type: MarkerType.ArrowClosed,
       color: "#10b981"
@@ -118,8 +117,8 @@ export async function fetchAndDraw({
         data: {
           transaction: {
             hash: output.spent_by![0].transaction.hash,
-            placeholder: true,
-          }
+          },
+          placeholder: true,
         },
         position: {
           x: 500,
@@ -143,8 +142,8 @@ export async function fetchAndDraw({
               hash: output.spent_by![0].transaction.hash,
             },
             input_index: output.spent_by![0].input_index,
-            placeholder: true,
-          }
+          },
+          placeholder: true,
         },
         parentId: output.spent_by![0].transaction.hash,
         extent: "parent",
@@ -162,7 +161,6 @@ export async function fetchAndDraw({
       id: `${output.spent_by![0].transaction.hash}-edge-${output.spent_by![0].input_index}`,
       source: `${output.transaction_hash}-output-${output.output_index}`,
       target: `${output.spent_by![0].transaction.hash}-input-${output.spent_by![0].input_index}`,
-      type: "bezier",
       markerEnd: {
         type: MarkerType.ArrowClosed,
         color: "#10b981"

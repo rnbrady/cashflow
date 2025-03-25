@@ -29,8 +29,6 @@ export interface Output {
   spent_by?: SpentBy[];
 }
 
-export type PlaceholderOutput = { placeholder: true } & Partial<Output>
-
 export interface Input {
   transaction: {
     hash: string;
@@ -41,10 +39,7 @@ export interface Input {
   value_satoshis: string | null;
   sequence_number: string;
   unlocking_bytecode: string;
-  placeholder: boolean;
 }
-
-export type PlaceholderInput = { placeholder: true } & Partial<Input>
 
 export interface Transaction {
   hash: string;
@@ -57,8 +52,6 @@ export interface Transaction {
   inputs: Input[];
   outputs: Output[];
 }
-
-export type PlaceholderTransaction = { placeholder: true } & Partial<Transaction>
 
 export interface ParentTransaction {
   size_bytes: string;

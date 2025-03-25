@@ -93,7 +93,6 @@ export default function TransactionGraph({ transactionData, onTransactionSelect 
                   id: `edge-invisible-${txId}-${inputIndex}`,
                   source: invisibleNodeId,
                   target: `${txId}-input-${inputIndex}`,
-                  type: "bezier",
                   markerEnd: {
                     type: MarkerType.ArrowClosed,
                     color: "#10b981"
