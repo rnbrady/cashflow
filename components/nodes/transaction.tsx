@@ -2,7 +2,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { truncateHash, getContrastColor, hashToColor } from "@/lib/utils"
 import { Transaction } from "@/lib/types"
 import { Node, NodeProps } from "@xyflow/react"
-
+import React from "react"
 export type TransactionNode = Node<{
   transaction: Transaction
 } | {
@@ -10,7 +10,7 @@ export type TransactionNode = Node<{
   transaction: Partial<Transaction>
 }, 'transaction'>
 
-export function TransactionNode({ data: { transaction } }: NodeProps<TransactionNode>) {
+export const TransactionNode = React.memo(({ data: { transaction } }: NodeProps<TransactionNode>) => {
   const color = hashToColor(transaction.hash);
   const textColor = getContrastColor(color)
   
@@ -50,6 +50,6 @@ export function TransactionNode({ data: { transaction } }: NodeProps<Transaction
       </div>
     </TooltipProvider>
   )
-}
+})
 
-
+TransactionNode.displayName = "TransactionNode"

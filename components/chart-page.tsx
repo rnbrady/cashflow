@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { NodeChange, ReactFlow, useOnViewportChange, Viewport, type Node, NodeMouseHandler } from '@xyflow/react';
+import { NodeChange, ReactFlow, NodeMouseHandler } from '@xyflow/react';
 import { useShallow } from 'zustand/react/shallow';
 import { TransactionNode } from "@/components/nodes/transaction"
 import { InputNode } from "@/components/nodes/input"
@@ -46,12 +46,6 @@ export function ChartPage() {
     addEdges,
     layout
   } = useStore(useShallow(selector));
-  
-  useOnViewportChange({
-    onStart: (viewport: Viewport) => console.log('start', viewport),
-    onChange: (viewport: Viewport) => console.log('change', viewport),
-    onEnd: (viewport: Viewport) => {console.log('end', viewport)},
-  });
 
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {

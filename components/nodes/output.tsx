@@ -3,7 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Output } from "@/lib/types"
 import { hashToColor } from "@/lib/utils"
 import { getScriptType, tryDecodeCashAddress } from "@/lib/utils"
-
+import React from "react"
 export type OutputNode = Node<{
   output: Output
   } | {
@@ -11,7 +11,7 @@ export type OutputNode = Node<{
     output: Partial<Output>
   }, 'output'>
 
-export function OutputNode({ data: { output }, isConnectable }: NodeProps<OutputNode>) {
+export const OutputNode = React.memo(({ data: { output }, isConnectable }: NodeProps<OutputNode>) => {
   const borderColor = output.transaction_hash ? hashToColor(output.transaction_hash) : "#6366f1"
 
   const scriptType = getScriptType(output.locking_bytecode_pattern)
@@ -75,4 +75,6 @@ export function OutputNode({ data: { output }, isConnectable }: NodeProps<Output
       </div>
     </TooltipProvider>
   )
-}
+})
+
+OutputNode.displayName = "OutputNode"
