@@ -6,8 +6,8 @@ import { ReactFlowProvider } from '@xyflow/react';
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "Bitcoin Cash Transaction Graph Explorer",
-  description: "A visual explorer for Bitcoin Cash transactions",
+  title: "Cashflow",
+  description: "Bitcoin Cash Transaction Explorer",
 }
 
 export default function RootLayout({
