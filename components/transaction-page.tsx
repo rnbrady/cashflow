@@ -203,6 +203,14 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                           {getScriptType(output.locking_bytecode_pattern, true)}
                         </p>
                       </div>
+                      <div>
+                        <p className="text-sm text-gray-600">Tokens</p>
+                        <p className="text-sm">
+                          {output.nonfungible_token_capability}{' '}
+                          {output.nonfungible_token_commitment}{' '}
+                          {output.fungible_token_amount}
+                        </p>
+                      </div>
                       {output.spent_by?.[0] && (
                         <div>
                           <p className="text-sm text-gray-600">Spent By</p>

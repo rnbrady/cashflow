@@ -81,7 +81,8 @@ export function ChartPage() {
         transactionHash: node.id,
         addNodes,
         addEdges,
-      }).catch(err => {
+      })
+      .catch(err => {
         setError("Failed to fetch transaction. Please check your input and try again.");
         console.error(err);
       });
@@ -127,6 +128,7 @@ export function ChartPage() {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onNodeClick={handleNodeClick}
+          minZoom={0.01}
           fitView
           />
         </div>

@@ -33,6 +33,7 @@ export const GET_TRANSACTION_DETAILS = `
         locking_bytecode_pattern
         nonfungible_token_capability
         nonfungible_token_commitment
+        fungible_token_amount
         token_category
         spent_by {
           input_index

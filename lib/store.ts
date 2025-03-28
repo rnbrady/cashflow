@@ -112,7 +112,7 @@ export const useStore = create<ChartState>((set, get) => ({
 
     const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
-    g.setGraph({ rankdir: "LR" });
+    g.setGraph({ rankdir: "LR", ranksep: 150, ranker: "longest-path" });
   
     edges.forEach((edge) => g.setEdge(edge.source.split("-")[0], edge.target.split("-")[0]));
 

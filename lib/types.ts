@@ -25,6 +25,7 @@ export interface Output {
   value_satoshis: string;
   nonfungible_token_capability?: string | null;
   nonfungible_token_commitment?: string | null;
+  fungible_token_amount?: string | null;
   token_category?: string | null;
   spent_by?: SpentBy[];
 }
