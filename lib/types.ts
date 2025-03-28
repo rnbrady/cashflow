@@ -1,3 +1,5 @@
+import { Node } from "@xyflow/react"
+
 export interface Block {
   height: string;
   hash: string;
@@ -64,3 +66,24 @@ export interface ParentTransaction {
     };
   }>;
 } 
+
+export type InputNodeType = Node<{
+  input: Input
+} | {
+  placeholder: true,
+  input: Partial<Input>
+}, 'input'> 
+
+export type OutputNodeType = Node<{
+  output: Output
+} | {
+  placeholder: true,
+  output: Partial<Output>
+}, 'output'> 
+
+export type TransactionNodeType = Node<{
+  transaction: Transaction
+} | {
+  placeholder: true,
+  transaction: Partial<Transaction>
+}, 'transaction'> 

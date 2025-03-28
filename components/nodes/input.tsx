@@ -1,19 +1,12 @@
 "use client"
 
 import React from "react"
-import { Handle, Position, Node, NodeProps } from "@xyflow/react"
+import { Handle, Position, NodeProps } from "@xyflow/react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { hashToColor, truncateHash } from "@/lib/utils"
-import { Input } from "@/lib/types"
+import { InputNodeType } from "@/lib/types"
 
-type InputNode = Node<{
-  input: Input
-} | {
-  placeholder: true,
-  input: Partial<Input>
-}, 'input'> 
-
-export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNode>) {
+export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNodeType>) {
   const borderColor = input.outpoint_transaction_hash ? hashToColor(input.outpoint_transaction_hash) : "#6366f1"
 
   const isCoinbase = input.outpoint_transaction_hash === "0000000000000000000000000000000000000000000000000000000000000000"
