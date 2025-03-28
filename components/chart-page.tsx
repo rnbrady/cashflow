@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { Search } from "lucide-react"
 import { useShallow } from 'zustand/react/shallow';
 import { NodeChange, ReactFlow, NodeMouseHandler } from '@xyflow/react';
@@ -14,27 +14,28 @@ import { InputNode } from "@/components/nodes/input"
 import { OutputNode } from "@/components/nodes/output"
 import { fetchAndDraw } from "@/lib/fetch-and-draw"
 
-const selector = (state: ChartState) => ({
-  nodes: state.nodes,
-  edges: state.edges,
-  onNodesChange: state.onNodesChange,
-  onEdgesChange: state.onEdgesChange,
-  onConnect: state.onConnect,
-  addNodes: state.addNodes,
-  addEdges: state.addEdges,
-  layout: state.layout,
-});
-
-const nodeTypes = {
-  transaction: TransactionNode,
-  input: InputNode,
-  output: OutputNode,
-} 
-
 export function ChartPage() {
   const [searchQuery, setSearchQuery] = useState("5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+
+  const selector = useCallback((state: ChartState) => ({
+    nodes: state.nodes,
+    edges: state.edges,
+    onNodesChange: state.onNodesChange,
+    onEdgesChange: state.onEdgesChange,
+    onConnect: state.onConnect,
+    addNodes: state.addNodes,
+    addEdges: state.addEdges,
+    layout: state.layout,
+  }), []);
+  
+  const nodeTypes = useMemo(() => ({
+    transaction: TransactionNode,
+    input: InputNode,
+    output: OutputNode,
+  }), []);
+
   const {
     nodes,
     edges,
@@ -46,27 +47,26 @@ export function ChartPage() {
     layout
   } = useStore(useShallow(selector));
 
+  const handleSearch = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault()
+      if (!searchQuery) return
 
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!searchQuery) return
-
-    setLoading(true)
-    setError("")
-
-    try {
-      await fetchAndDraw({
-        transactionHash: searchQuery,
-        addNodes,
-        addEdges,
-      });
-    } catch (err) {
-      setError("Failed to fetch transaction. Please check your input and try again.")
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
-  }
+      setLoading(true)
+      setError("")
+      
+    fetchAndDraw({
+          transactionHash: searchQuery,
+          addNodes,
+          addEdges,
+      })
+      .catch(err => {
+        setError("Failed to fetch transaction. Please check your input and try again.")
+        console.error(err)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [addNodes, addEdges, searchQuery])
 
   const handleNodesChange = useCallback((changes: NodeChange[]) => {
     console.log(changes)
@@ -75,7 +75,7 @@ export function ChartPage() {
 
   const handleNodeClick: NodeMouseHandler = useCallback((event, node) => {
     event.preventDefault();
-    console.log(node)
+
     if (node.type === 'transaction' && node.id) {
       fetchAndDraw({
         transactionHash: node.id,
@@ -108,8 +108,9 @@ export function ChartPage() {
           </Button>
           <Button 
             type="button" 
-            onClick={() => layout()} 
+            onClick={layout} 
             variant="outline"
+            disabled={loading}
           >
             Arrange
           </Button>
