@@ -14,7 +14,7 @@ type OutputNode = Node<{
   }, 'output'>
 
 export function OutputNode({ data: { output }, isConnectable }: NodeProps<OutputNode>) {
-  const borderColor = output.transaction_hash ? hashToColor(output.transaction_hash) : "#6366f1"
+  const borderColor = hashToColor(output.spent_by?.[0]?.transaction.hash)
 
   const scriptType = getScriptType(output.locking_bytecode_pattern)
 

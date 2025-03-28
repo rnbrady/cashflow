@@ -124,7 +124,7 @@ export function cn(...inputs: ClassValue[]) {
 
 // Generate a color from a hash string
 export const hashToColor = (hash: string | undefined | null) => {
-  if (!hash) return "#6366f1" // Default indigo color
+  if (!hash) return "lightgray"
 
   // Take the first 6 characters of the hash and use as a hex color
   const color = `#${hash.substring(0, 6)}`
