@@ -1,20 +1,24 @@
 import { Transaction } from "@/lib/types";
 import { fetchTransactionData } from "@/lib/chaingraph-api";
-import { Edge, MarkerType, Node } from "@xyflow/react";
+import { Edge, MarkerType, Node, CoordinateExtent } from "@xyflow/react";
 
 
 export async function fetchAndDraw({
   transactionHash,
   addNodes,
   addEdges,
+  layout,
+  addNodesAndEdges,
 }: {
   transactionHash: string;
   addNodes: (nodes: Node[]) => void;
   addEdges: (edges: Edge[]) => void;
+  layout: () => void;
+  addNodesAndEdges: ({ newNodes, newEdges, layout }: { newNodes: Node[], newEdges: Edge[], layout?: boolean }) => void;
 }) {
   const transaction: Transaction = await fetchTransactionData(transactionHash);
 
-  addNodes([{
+  const mainTransaction = {
     id: transaction.hash,
     type: "transaction",
     data: {
@@ -25,46 +29,43 @@ export async function fetchAndDraw({
       y: 0,
     },
     style: { width: 400 },
-  }])
+  };
 
-  addNodes(transaction.inputs.map((input) => ({
+  const inputs = transaction.inputs.map((input) => ({
     id: `${input.transaction.hash}-input-${input.input_index}`,
     type: "input",
     data: {
       input: input,
     },
     parentId: input.transaction.hash,
-    extent: "parent",
+    extent: "parent" as const,
     position: {
       x: 0,
       y: 45 + Number(input.input_index) * 85
     },
     style: { width: 180, padding: "0px", border: "none" },
-  })))
+  }));
 
-  addNodes(
-    transaction.inputs.map((input) => ({
-      id: `${input.outpoint_transaction_hash}`,
-      type: "transaction",
-      data: {
-        transaction: {
-          hash: input.outpoint_transaction_hash,
-        },
-        placeholder: true,
+  const upstreamTransactions = transaction.inputs.map((input) => ({
+    id: `${input.outpoint_transaction_hash}`,
+    type: "transaction",
+    data: {
+      transaction: {
+        hash: input.outpoint_transaction_hash,
       },
-      position: {
-        x: -500,
-        y: 0,
-      },
-      style: { width: 400 },
-    }))
-  )
+      placeholder: true,
+    },
+    position: {
+      x: -500,
+      y: 0,
+    },
+    style: { width: 400 },
+  }));
 
-  addNodes(
-    transaction.inputs.map((input) => ({
-      id: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
-      type: "output",
-      data: {
+  const upstreamOutputs = transaction.inputs.map((input) => ({
+    id: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
+    type: "output",
+    data: {
         output: {
           transaction_hash: input.outpoint_transaction_hash,
           output_index: input.outpoint_index,
@@ -72,16 +73,15 @@ export async function fetchAndDraw({
         placeholder: true,
       },
       parentId: input.outpoint_transaction_hash,
-      extent: "parent",
+      extent: "parent" as const,
       position: {
         x: 270,
         y: 45 + Number(input.outpoint_index) * 85,
       },
       style: { width: 180, padding: "0px", border: "none" },
-    }))
-  )
+  }));
 
-  addEdges(transaction.inputs.map((input) => ({
+  const upstreamEdges = transaction.inputs.map((input) => ({
     id: `${input.transaction.hash}-edge-${input.input_index}`,
     source: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
     target: `${input.transaction.hash}-input-${input.input_index}`,
@@ -91,26 +91,25 @@ export async function fetchAndDraw({
     },
     label: `${input.value_satoshis}`,
     style: { stroke: "#10b981", strokeWidth: 2 },
-  })))
+  }))
   
 
-  addNodes(transaction.outputs.map((output) => ({
+  const outputs = transaction.outputs.map((output) => ({
     id: `${output.transaction_hash}-output-${output.output_index}`,
     type: "output",
     data: {
       output: output,
     },
     parentId: output.transaction_hash,
-    extent: "parent",
+    extent: "parent" as const,
     position: {
       x: 270,
       y: 45 + Number(output.output_index) * 85
     },
     style: { width: 180, padding: "0px", border: "none" },
-  })))
+  }))
 
-  addNodes(
-    transaction.outputs
+  const downstreamTransactions = transaction.outputs
     .filter((output) => output.spent_by && output.spent_by.length > 0)
     .map((output) => ({
       id: `${output.spent_by![0].transaction.hash}`,
@@ -127,10 +126,9 @@ export async function fetchAndDraw({
         },
         style: { width: 400 },
     }))
-  )
 
-  addNodes(
-    transaction.outputs
+
+  const downstreamInputs = transaction.outputs
     .filter((output) => output.spent_by && output.spent_by.length > 0)
     .map((output) => ({
       id: `${output.spent_by![0].transaction.hash}-input-${output.spent_by![0].input_index}`,
@@ -147,16 +145,15 @@ export async function fetchAndDraw({
           placeholder: true,
         },
         parentId: output.spent_by![0].transaction.hash,
-        extent: "parent",
+        extent: "parent" as const,
         position: {
           x: 0,
           y: 45 + Number(output.spent_by![0].input_index) * 85
         },
         style: { width: 180, padding: "0px", border: "none" },
     }))
-  )
 
-  addEdges( transaction.outputs
+  const downstreamEdges = transaction.outputs
     .filter((output) => output.spent_by && output.spent_by.length > 0)
     .map((output) => ({
       id: `${output.spent_by![0].transaction.hash}-edge-${output.spent_by![0].input_index}`,
@@ -164,5 +161,8 @@ export async function fetchAndDraw({
       target: `${output.spent_by![0].transaction.hash}-input-${output.spent_by![0].input_index}`,
       label: `${output.value_satoshis}`,
     }))
-  )
+
+  const nodes = [mainTransaction, ...inputs, ...upstreamTransactions, ...upstreamOutputs, ...outputs, ...downstreamTransactions, ...downstreamInputs];
+  const edges = [...upstreamEdges, ...downstreamEdges];
+  addNodesAndEdges({ newNodes: nodes, newEdges: edges, layout: true });
 }

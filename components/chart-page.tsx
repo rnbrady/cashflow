@@ -1,9 +1,9 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useMemo, useState, useRef } from "react"
 import { Search } from "lucide-react"
 import { useShallow } from 'zustand/react/shallow';
-import { NodeChange, ReactFlow, NodeMouseHandler, Background, BackgroundVariant, MarkerType } from '@xyflow/react';
+import { NodeChange, ReactFlow, NodeMouseHandler, Background, BackgroundVariant, MarkerType, ReactFlowInstance, useReactFlow } from '@xyflow/react';
 import "@xyflow/react/dist/style.css"
 
 import { useStore, ChartState } from '@/lib/store';
@@ -18,6 +18,7 @@ export function ChartPage() {
   const [searchQuery, setSearchQuery] = useState("5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const reactFlow = useReactFlow()
 
   const selector = useCallback((state: ChartState) => ({
     nodes: state.nodes,
@@ -28,6 +29,8 @@ export function ChartPage() {
     addNodes: state.addNodes,
     addEdges: state.addEdges,
     layout: state.layout,
+    addNodesAndEdges: state.addNodesAndEdges,
+    clear: state.clear,
   }), []);
   
   const nodeTypes = useMemo(() => ({
@@ -44,7 +47,9 @@ export function ChartPage() {
     onConnect,
     addNodes,
     addEdges,
-    layout
+    layout,
+    addNodesAndEdges,
+    clear,
   } = useStore(useShallow(selector));
 
   const handleSearch = useCallback((e: React.FormEvent<HTMLFormElement>) => {
@@ -58,6 +63,8 @@ export function ChartPage() {
           transactionHash: searchQuery,
           addNodes,
           addEdges,
+          layout,
+          addNodesAndEdges,
     })
     .then(() => setTimeout(layout, 1))
       .catch(err => {
@@ -81,7 +88,9 @@ export function ChartPage() {
       fetchAndDraw({
         transactionHash: node.id,
         addNodes,
-        addEdges
+        addEdges,
+        layout,
+        addNodesAndEdges,
       })
       .then(() => setTimeout(layout, 100))
       .catch(err => {
@@ -106,7 +115,7 @@ export function ChartPage() {
           />
           <Button type="submit" disabled={loading} variant="default">
             {loading ? "Searching..." : <Search className="h-4 w-4 mr-2" />}
-            Search
+            Add
           </Button>
           <Button 
             type="button" 
@@ -115,6 +124,22 @@ export function ChartPage() {
             disabled={loading}
           >
             Arrange
+          </Button>
+          <Button 
+            type="button" 
+            onClick={() => reactFlow.fitView()} 
+            variant="outline"
+            disabled={loading}
+          >
+            Fit
+          </Button>
+          <Button 
+            type="button" 
+            onClick={clear} 
+            variant="outline"
+            disabled={loading}
+          >
+            Clear
           </Button>
         </form>
 
