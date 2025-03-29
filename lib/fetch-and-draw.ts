@@ -24,7 +24,7 @@ export async function fetchAndDraw({
       x: 0,
       y: 0,
     },
-    style: { width: 450 },
+    style: { width: 400 },
   }])
 
   addNodes(transaction.inputs.map((input) => ({
@@ -56,7 +56,7 @@ export async function fetchAndDraw({
         x: -500,
         y: 0,
       },
-      style: { width: 450 },
+      style: { width: 400 },
     }))
   )
 
@@ -89,6 +89,7 @@ export async function fetchAndDraw({
       type: MarkerType.ArrowClosed,
       color: "#10b981"
     },
+    label: `${input.value_satoshis}`,
     style: { stroke: "#10b981", strokeWidth: 2 },
   })))
   
@@ -124,7 +125,7 @@ export async function fetchAndDraw({
           x: 500,
           y: 0,
         },
-        style: { width: 450 },
+        style: { width: 400 },
     }))
   )
 
@@ -161,11 +162,7 @@ export async function fetchAndDraw({
       id: `${output.spent_by![0].transaction.hash}-edge-${output.spent_by![0].input_index}`,
       source: `${output.transaction_hash}-output-${output.output_index}`,
       target: `${output.spent_by![0].transaction.hash}-input-${output.spent_by![0].input_index}`,
-      markerEnd: {
-        type: MarkerType.ArrowClosed,
-        color: "#10b981"
-      },
-      style: { stroke: "#10b981", strokeWidth: 2 },
+      label: `${output.value_satoshis}`,
     }))
   )
 }

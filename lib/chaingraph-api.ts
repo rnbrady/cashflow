@@ -31,13 +31,8 @@ async function fetchMainnetTransaction(hash: string): Promise<Transaction> {
 }
 
 export async function fetchTransactionData(hash: string): Promise<Transaction> {
-  // Simulate network delay for mock data only
   if (currentDataSource === 'mock') {
-    await new Promise(resolve => setTimeout(resolve, 100));
-  }
-
-  if (currentDataSource === 'mock') {
-    const transaction = mockTransactions[hash];
+    const transaction = mockTransactions[hash.replace(/\\x/g, '')];
     if (!transaction) {
       throw new Error("Transaction could not be found.");
     }

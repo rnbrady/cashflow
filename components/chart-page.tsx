@@ -3,7 +3,7 @@
 import { useCallback, useMemo, useState } from "react"
 import { Search } from "lucide-react"
 import { useShallow } from 'zustand/react/shallow';
-import { NodeChange, ReactFlow, NodeMouseHandler } from '@xyflow/react';
+import { NodeChange, ReactFlow, NodeMouseHandler, Background, BackgroundVariant, MarkerType } from '@xyflow/react';
 import "@xyflow/react/dist/style.css"
 
 import { useStore, ChartState } from '@/lib/store';
@@ -58,7 +58,8 @@ export function ChartPage() {
           transactionHash: searchQuery,
           addNodes,
           addEdges,
-      })
+    })
+    .then(() => setTimeout(layout, 1))
       .catch(err => {
         setError("Failed to fetch transaction. Please check your input and try again.")
         console.error(err)
@@ -80,8 +81,9 @@ export function ChartPage() {
       fetchAndDraw({
         transactionHash: node.id,
         addNodes,
-        addEdges,
+        addEdges
       })
+      .then(() => setTimeout(layout, 100))
       .catch(err => {
         setError("Failed to fetch transaction. Please check your input and try again.");
         console.error(err);
@@ -123,15 +125,31 @@ export function ChartPage() {
         <div className="flex-1 h-full">
         <ReactFlow
           nodes={nodes}
-          edges={edges}
+          edges={edges.map((edge) => ({
+            ...edge,
+            label: edge.label ? Number(edge.label).toLocaleString() : edge.label,
+            markerEnd: {
+              type: MarkerType.ArrowClosed,
+              color: "#10b981"
+            },
+            style: { stroke: "#10b981", strokeWidth: 2 },
+            labelStyle: { fill: "#10b981" },
+            labelBgPadding: [2,1],
+            labelBgBorderRadius: 2,
+            labelShowBg: true,
+            labelBgStyle: { fill: "#ffffff" },
+          }))}
           nodeTypes={nodeTypes}
           onNodesChange={handleNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onNodeClick={handleNodeClick}
           minZoom={0.01}
+          maxZoom={10}
           fitView
-          />
+          >
+            <Background variant={BackgroundVariant.Dots} gap={12} size={1} color="lightgray" />
+          </ReactFlow>
         </div>
       </div>
     </div>

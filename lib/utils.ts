@@ -23,14 +23,14 @@ export function tryDecodeCashAddress(lockingBytecode: string | undefined): strin
     // Remove \x prefix if present
     const cleanHex = lockingBytecode.replace(/^\\x/, '');
     const bytecode = hexToBin(cleanHex);
-    const result = lockingBytecodeToCashAddress({
+    const result = lockingBytecodeToCashAddress(
       bytecode,
-      prefix: 'bitcoincash'
-    });
-    if (typeof result === 'string') {
+      'bitcoincash'
+    );
+    if (typeof result !== 'string') {
       return '-';
     }
-    return result.address;
+    return result;
   } catch (e) {
     console.error('Error decoding address:', e);
     return 'Could not decode address';

@@ -1,5 +1,7 @@
-export const GET_TRANSACTION_DETAILS = `
-  query GetTransactionDetails($txHash: bytea!) {
+import { graphql } from "chaingraph-ts";
+
+export const GET_TRANSACTION_DETAILS = graphql(`query
+  GetTransactionDetails($txHash: bytea!) {
     transaction(where: { hash: { _eq: $txHash } }) {
       hash
       encoded_hex
@@ -44,10 +46,10 @@ export const GET_TRANSACTION_DETAILS = `
       }
     }
   }
-`;
+`);
 
-export const GET_PARENT_TRANSACTION = `
-  query GetParentTransaction($txHash: bytea!) {
+export const GET_PARENT_TRANSACTION = graphql(`query 
+  GetParentTransaction($txHash: bytea!) {
     transaction(where: { hash: { _eq: $txHash } }) {
       size_bytes
       fee_satoshis
@@ -59,4 +61,4 @@ export const GET_PARENT_TRANSACTION = `
       }
     }
   }
-`; 
+`);
