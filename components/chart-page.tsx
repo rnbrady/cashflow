@@ -13,6 +13,8 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
+import { Raleway } from "next/font/google";
+
 import { useStore, ChartState } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +22,12 @@ import { TransactionNode } from "@/components/nodes/transaction";
 import { InputNode } from "@/components/nodes/input";
 import { OutputNode } from "@/components/nodes/output";
 import { fetchAndDraw } from "@/lib/fetch-and-draw";
+import { cn } from "@/lib/utils";
+
+const raleway = Raleway({
+  weight: ["700"],
+  subsets: ["latin"],
+});
 
 export function ChartPage() {
   const [searchQuery, setSearchQuery] = useState(
@@ -110,50 +118,65 @@ export function ChartPage() {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <header className="bg-white border-b p-4 shadow-sm">
-        <div className="flex justify-between items-end">
-          <div>
-            <h1 className="text-xl font-bold text-gray-800">Cashflow</h1>
+        <div className="flex justify-between flex-col md:flex-row md:items-end gap-4">
+          <div className="shrink-0 text-center md:text-left">
+            <h1 className={cn("text-xl text-gray-800 ", raleway.className)}>
+              Cashflow
+            </h1>
             <h2 className="text-xs text-gray-500">
               Bitcoin Cash Graph Explorer
             </h2>
           </div>
 
-          <form onSubmit={handleSearch} className="flex gap-2">
+          <form
+            onSubmit={handleSearch}
+            className="flex flex-col w-full sm:flex-row gap-2 justify-end"
+          >
             <Input
               type="text"
               placeholder="Enter transaction hash"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 min-w-[400px]"
+              className="w-full sm:w-auto sm:flex-1 max-w-xl min-w-64"
             />
-            <Button type="submit" disabled={loading} variant="default">
-              {loading ? "Searching..." : <Search className="h-4 w-4 mr-2" />}
-              Add
-            </Button>
-            <Button
-              type="button"
-              onClick={layout}
-              variant="outline"
-              disabled={loading}
-            >
-              Arrange
-            </Button>
-            <Button
-              type="button"
-              onClick={() => reactFlow.fitView()}
-              variant="outline"
-              disabled={loading}
-            >
-              Fit
-            </Button>
-            <Button
-              type="button"
-              onClick={clear}
-              variant="outline"
-              disabled={loading}
-            >
-              Clear
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="submit"
+                disabled={loading}
+                variant="default"
+                className="flex-1 sm:flex-initial"
+              >
+                {loading ? "Searching..." : <Search className="h-4 w-4 mr-2" />}
+                Add
+              </Button>
+              <Button
+                type="button"
+                onClick={layout}
+                variant="outline"
+                disabled={loading}
+                className="flex-1 sm:flex-initial"
+              >
+                Arrange
+              </Button>
+              <Button
+                type="button"
+                onClick={() => reactFlow.fitView()}
+                variant="outline"
+                disabled={loading}
+                className="flex-1 sm:flex-initial"
+              >
+                Fit
+              </Button>
+              <Button
+                type="button"
+                onClick={clear}
+                variant="outline"
+                disabled={loading}
+                className="flex-1 sm:flex-initial"
+              >
+                Clear
+              </Button>
+            </div>
           </form>
         </div>
 
@@ -191,6 +214,8 @@ export function ChartPage() {
             nodesDraggable
             nodesFocusable
             elementsSelectable
+            // https://reactflow.dev/learn/troubleshooting/remove-attribution
+            proOptions={{ hideAttribution: true }}
           >
             <Background
               variant={BackgroundVariant.Dots}

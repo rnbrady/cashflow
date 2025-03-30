@@ -48,52 +48,70 @@ export async function fetchAndDraw({
     style: { width: 180, padding: "0px", border: "none" },
   }));
 
-  const upstreamTransactions = transaction.inputs.map((input) => ({
-    id: `${input.outpoint_transaction_hash}`,
-    type: "transaction",
-    data: {
-      transaction: {
-        hash: input.outpoint_transaction_hash,
-        minOutputs: Number(input.outpoint_index) + 1,
+  const upstreamTransactions = transaction.inputs
+    .filter(
+      (input) =>
+        input.outpoint_transaction_hash !==
+        "\\x0000000000000000000000000000000000000000000000000000000000000000"
+    )
+    .map((input) => ({
+      id: `${input.outpoint_transaction_hash}`,
+      type: "transaction",
+      data: {
+        transaction: {
+          hash: input.outpoint_transaction_hash,
+          minOutputs: Number(input.outpoint_index) + 1,
+        },
+        placeholder: true,
       },
-      placeholder: true,
-    },
-    position: {
-      x: -500,
-      y: 0,
-    },
-  }));
-
-  const upstreamOutputs = transaction.inputs.map((input) => ({
-    id: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
-    type: "output",
-    data: {
-      output: {
-        transaction_hash: input.outpoint_transaction_hash,
-        output_index: input.outpoint_index,
+      position: {
+        x: -500,
+        y: 0,
       },
-      placeholder: true,
-    },
-    parentId: input.outpoint_transaction_hash,
-    extent: "parent" as const,
-    position: {
-      x: 270,
-      y: 45 + Number(input.outpoint_index) * 85,
-    },
-    style: { width: 180, padding: "0px", border: "none" },
-  }));
+    }));
 
-  const upstreamEdges = transaction.inputs.map((input) => ({
-    id: `${input.transaction.hash}-edge-${input.input_index}`,
-    source: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
-    target: `${input.transaction.hash}-input-${input.input_index}`,
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: "#10b981",
-    },
-    label: `${input.value_satoshis}`,
-    style: { stroke: "#10b981", strokeWidth: 2 },
-  }));
+  const upstreamOutputs = transaction.inputs
+    .filter(
+      (input) =>
+        input.outpoint_transaction_hash !==
+        "\\x0000000000000000000000000000000000000000000000000000000000000000"
+    )
+    .map((input) => ({
+      id: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
+      type: "output",
+      data: {
+        output: {
+          transaction_hash: input.outpoint_transaction_hash,
+          output_index: input.outpoint_index,
+        },
+        placeholder: true,
+      },
+      parentId: input.outpoint_transaction_hash,
+      extent: "parent" as const,
+      position: {
+        x: 270,
+        y: 45 + Number(input.outpoint_index) * 85,
+      },
+      style: { width: 180, padding: "0px", border: "none" },
+    }));
+
+  const upstreamEdges = transaction.inputs
+    .filter(
+      (input) =>
+        input.outpoint_transaction_hash !==
+        "\\x0000000000000000000000000000000000000000000000000000000000000000"
+    )
+    .map((input) => ({
+      id: `${input.transaction.hash}-edge-${input.input_index}`,
+      source: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
+      target: `${input.transaction.hash}-input-${input.input_index}`,
+      markerEnd: {
+        type: MarkerType.ArrowClosed,
+        color: "#10b981",
+      },
+      label: `${input.value_satoshis}`,
+      style: { stroke: "#10b981", strokeWidth: 2 },
+    }));
 
   const outputs = transaction.outputs.map((output) => ({
     id: `${output.transaction_hash}-output-${output.output_index}`,

@@ -25,7 +25,7 @@ export function TransactionNode({
     transaction.outputs?.length || 0
   );
 
-  if (transaction.hash?.startsWith("\\x1c8b")) {
+  if (transaction.hash?.startsWith("\\x0437")) {
     console.log("transaction of interest", placeholder, transaction);
   }
 
