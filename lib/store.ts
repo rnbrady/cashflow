@@ -11,7 +11,7 @@ import {
   type Viewport,
 } from "@xyflow/react";
 import Dagre from "@dagrejs/dagre";
-import { TransactionNodeType, Transaction, isTransactionNode } from "./types";
+import { TransactionNodeType, isTransactionNode } from "./types";
 
 export interface ChartState {
   nodes: Node[];

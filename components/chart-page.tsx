@@ -1,16 +1,14 @@
 "use client";
 
-import { useCallback, useMemo, useState, useRef } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 import {
-  NodeChange,
   ReactFlow,
   NodeMouseHandler,
   Background,
   BackgroundVariant,
   MarkerType,
-  ReactFlowInstance,
   useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -38,8 +36,6 @@ export function ChartPage() {
       onNodesChange: state.onNodesChange,
       onEdgesChange: state.onEdgesChange,
       onConnect: state.onConnect,
-      addNodes: state.addNodes,
-      addEdges: state.addEdges,
       layout: state.layout,
       addNodesAndEdges: state.addNodesAndEdges,
       clear: state.clear,
@@ -62,8 +58,6 @@ export function ChartPage() {
     onNodesChange,
     onEdgesChange,
     onConnect,
-    addNodes,
-    addEdges,
     layout,
     addNodesAndEdges,
     clear,
@@ -79,9 +73,6 @@ export function ChartPage() {
 
       fetchAndDraw({
         transactionHash: searchQuery,
-        addNodes,
-        addEdges,
-        layout,
         addNodesAndEdges,
       })
         .catch((err) => {
@@ -94,7 +85,7 @@ export function ChartPage() {
           setLoading(false);
         });
     },
-    [addNodes, addEdges, searchQuery]
+    [searchQuery, addNodesAndEdges]
   );
 
   const handleNodeClick: NodeMouseHandler = useCallback(
@@ -104,9 +95,6 @@ export function ChartPage() {
       if (node.type === "transaction" && node.id) {
         fetchAndDraw({
           transactionHash: node.id,
-          addNodes,
-          addEdges,
-          layout,
           addNodesAndEdges,
         }).catch((err) => {
           setError(
@@ -116,53 +104,58 @@ export function ChartPage() {
         });
       }
     },
-    [addNodes, addEdges]
+    [addNodesAndEdges]
   );
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       <header className="bg-white border-b p-4 shadow-sm">
-        <h1 className="text-2xl font-bold text-gray-800">
-          Cashflow Bitcoin Cash Explorer
-        </h1>
+        <div className="flex justify-between items-end">
+          <div>
+            <h1 className="text-xl font-bold text-gray-800">Cashflow</h1>
+            <h2 className="text-xs text-gray-500">
+              Bitcoin Cash Graph Explorer
+            </h2>
+          </div>
 
-        <form onSubmit={handleSearch} className="flex gap-2 mt-4">
-          <Input
-            type="text"
-            placeholder="Enter transaction hash"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1"
-          />
-          <Button type="submit" disabled={loading} variant="default">
-            {loading ? "Searching..." : <Search className="h-4 w-4 mr-2" />}
-            Add
-          </Button>
-          <Button
-            type="button"
-            onClick={layout}
-            variant="outline"
-            disabled={loading}
-          >
-            Arrange
-          </Button>
-          <Button
-            type="button"
-            onClick={() => reactFlow.fitView()}
-            variant="outline"
-            disabled={loading}
-          >
-            Fit
-          </Button>
-          <Button
-            type="button"
-            onClick={clear}
-            variant="outline"
-            disabled={loading}
-          >
-            Clear
-          </Button>
-        </form>
+          <form onSubmit={handleSearch} className="flex gap-2">
+            <Input
+              type="text"
+              placeholder="Enter transaction hash"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="flex-1 min-w-[400px]"
+            />
+            <Button type="submit" disabled={loading} variant="default">
+              {loading ? "Searching..." : <Search className="h-4 w-4 mr-2" />}
+              Add
+            </Button>
+            <Button
+              type="button"
+              onClick={layout}
+              variant="outline"
+              disabled={loading}
+            >
+              Arrange
+            </Button>
+            <Button
+              type="button"
+              onClick={() => reactFlow.fitView()}
+              variant="outline"
+              disabled={loading}
+            >
+              Fit
+            </Button>
+            <Button
+              type="button"
+              onClick={clear}
+              variant="outline"
+              disabled={loading}
+            >
+              Clear
+            </Button>
+          </form>
+        </div>
 
         {error && <div className="text-red-500 mt-2">{error}</div>}
       </header>
@@ -191,7 +184,7 @@ export function ChartPage() {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
-            onNodeDoubleClick={handleNodeClick}
+            onNodeClick={handleNodeClick}
             minZoom={0.01}
             maxZoom={10}
             fitView
