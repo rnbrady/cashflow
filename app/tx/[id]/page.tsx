@@ -1,22 +1,24 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { TransactionPage } from "@/components/transaction-page";
 import { Transaction } from "@/lib/types";
-import { 
-  fetchTransactionData, 
-  setDataSource, 
+import {
+  fetchTransactionData,
+  setDataSource,
   getCurrentDataSource,
-  DataSource 
+  DataSource,
 } from "@/lib/chaingraph-api";
 
 export default function TransactionPageContainer() {
-  const params = useParams();
-  const txId = params.id as string;
+  const params = useParams<{ id: string }>();
+  const txId = params?.id ?? "";
   const [transaction, setTransaction] = useState<Transaction | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [dataSource, setDataSourceState] = useState<DataSource>(getCurrentDataSource());
+  const [dataSource, setDataSourceState] = useState<DataSource>(
+    getCurrentDataSource()
+  );
 
   // Function to change data source
   const handleDataSourceChange = (source: DataSource) => {
@@ -33,7 +35,9 @@ export default function TransactionPageContainer() {
         const tx = await fetchTransactionData(txId);
         setTransaction(tx);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch transaction");
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch transaction"
+        );
       }
     };
 
@@ -47,7 +51,9 @@ export default function TransactionPageContainer() {
           <div className="flex justify-end">
             <select
               value={dataSource}
-              onChange={(e) => handleDataSourceChange(e.target.value as DataSource)}
+              onChange={(e) =>
+                handleDataSourceChange(e.target.value as DataSource)
+              }
               className="bg-white border border-gray-300 rounded px-3 py-1 text-sm"
             >
               <option value="mock">Mock Data</option>
@@ -69,7 +75,9 @@ export default function TransactionPageContainer() {
           <div className="flex justify-end">
             <select
               value={dataSource}
-              onChange={(e) => handleDataSourceChange(e.target.value as DataSource)}
+              onChange={(e) =>
+                handleDataSourceChange(e.target.value as DataSource)
+              }
               className="bg-white border border-gray-300 rounded px-3 py-1 text-sm"
             >
               <option value="mock">Mock Data</option>
@@ -104,4 +112,4 @@ export default function TransactionPageContainer() {
       <TransactionPage transaction={transaction} />
     </div>
   );
-} 
+}

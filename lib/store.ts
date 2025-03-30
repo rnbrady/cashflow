@@ -210,11 +210,6 @@ function upsertNodes({
       };
     }
 
-    if (newNode.data?.transaction?.hash?.startsWith("\\x1c8b")) {
-      console.log("update of interest", newNode.data);
-      console.log("updatedNodes[existingNodeIndex]", updatedNodes);
-    }
-
     return updatedNodes;
   });
 
