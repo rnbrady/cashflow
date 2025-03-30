@@ -1,15 +1,27 @@
-"use client"
+"use client";
 
-import React from "react"
-import { Handle, Position, NodeProps } from "@xyflow/react"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { hashToColor, truncateHash } from "@/lib/utils"
-import { InputNodeType } from "@/lib/types"
+import React, { memo } from "react";
+import { Handle, Position, NodeProps } from "@xyflow/react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { hashToColor, truncateHash } from "@/lib/utils";
+import { InputNodeType } from "@/lib/types";
 
-export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNodeType>) {
-  const borderColor = input.outpoint_transaction_hash ? hashToColor(input.outpoint_transaction_hash) : "#6366f1"
+function InputNode({
+  data: { input },
+  isConnectable,
+}: NodeProps<InputNodeType>) {
+  const borderColor = input.outpoint_transaction_hash
+    ? hashToColor(input.outpoint_transaction_hash)
+    : "#6366f1";
 
-  const isCoinbase = input.outpoint_transaction_hash === "0000000000000000000000000000000000000000000000000000000000000000"
+  const isCoinbase =
+    input.outpoint_transaction_hash ===
+    "0000000000000000000000000000000000000000000000000000000000000000";
 
   return (
     <TooltipProvider>
@@ -28,7 +40,7 @@ export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNod
           <TooltipTrigger asChild>
             <div
               className="p-2 rounded-md bg-gray-100 border-l-4 shadow-sm text-xs"
-              style={{ borderLeftColor: borderColor}}
+              style={{ borderLeftColor: borderColor }}
             >
               <div className="font-medium mb-1">Input #{input.input_index}</div>
 
@@ -37,7 +49,9 @@ export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNod
                   <div className="bg-yellow-100 text-yellow-800 px-1 rounded text-[10px] inline-block mb-1">
                     Coinbase
                   </div>
-                  <div className="text-[10px] truncate">{input.outpoint_transaction_hash?.substring(0, 20)}...</div>
+                  <div className="text-[10px] truncate">
+                    {input.outpoint_transaction_hash?.substring(0, 20)}...
+                  </div>
                 </div>
               ) : (
                 <div className="text-gray-600">
@@ -63,8 +77,16 @@ export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNod
                 <div className="font-bold">Coinbase Input</div>
                 <div className="text-xs mt-1">
                   <div>Sequence: {input.sequence_number}</div>
-                  <div className="break-all">Data: {input.unlocking_bytecode}</div>
-                  <div className="break-all">Decoded: {Buffer.from(input.unlocking_bytecode?.replace(/^0x/, '') || '', 'hex').toString('ascii')}</div>
+                  <div className="break-all">
+                    Data: {input.unlocking_bytecode}
+                  </div>
+                  <div className="break-all">
+                    Decoded:{" "}
+                    {Buffer.from(
+                      input.unlocking_bytecode?.replace(/^0x/, "") || "",
+                      "hex"
+                    ).toString("ascii")}
+                  </div>
                 </div>
               </div>
             ) : (
@@ -81,5 +103,7 @@ export function InputNode({ data: { input }, isConnectable }: NodeProps<InputNod
         </Tooltip>
       </div>
     </TooltipProvider>
-  )
+  );
 }
+
+export default memo(InputNode);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Loader2 as Loader } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 import {
   ReactFlow,
@@ -18,9 +18,9 @@ import { Raleway } from "next/font/google";
 import { useStore, ChartState } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TransactionNode } from "@/components/nodes/transaction";
-import { InputNode } from "@/components/nodes/input";
-import { OutputNode } from "@/components/nodes/output";
+import TransactionNode from "@/components/nodes/transaction";
+import InputNode from "@/components/nodes/input";
+import OutputNode from "@/components/nodes/output";
 import { fetchAndDraw } from "@/lib/fetch-and-draw";
 import { cn } from "@/lib/utils";
 
@@ -91,6 +91,7 @@ export function ChartPage() {
         })
         .finally(() => {
           setLoading(false);
+          setSearchQuery("");
         });
     },
     [searchQuery, addNodesAndEdges]
@@ -138,6 +139,7 @@ export function ChartPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full sm:w-auto sm:flex-1 max-w-xl min-w-64"
+              spellCheck={false}
             />
             <div className="flex gap-2">
               <Button
@@ -146,7 +148,11 @@ export function ChartPage() {
                 variant="default"
                 className="flex-1 sm:flex-initial"
               >
-                {loading ? "Searching..." : <Search className="h-4 w-4 mr-2" />}
+                {loading ? (
+                  <Loader className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Search className="h-4 w-4 mr-2" />
+                )}
                 Add
               </Button>
               <Button

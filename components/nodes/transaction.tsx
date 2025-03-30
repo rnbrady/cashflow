@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { NodeProps } from "@xyflow/react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getContrastColor, hashToColor } from "@/lib/utils";
@@ -8,7 +8,7 @@ import { TransactionNodeType } from "@/lib/types";
 import { Copy } from "lucide-react";
 import { Button } from "../ui/button";
 
-export function TransactionNode({
+function TransactionNode({
   data: { transaction, placeholder },
 }: NodeProps<TransactionNodeType>) {
   const color = hashToColor(transaction.hash);
@@ -24,10 +24,6 @@ export function TransactionNode({
     transaction.minOutputs || 0,
     transaction.outputs?.length || 0
   );
-
-  if (transaction.hash?.startsWith("\\x0437")) {
-    console.log("transaction of interest", placeholder, transaction);
-  }
 
   const contentHeight = Math.max(numInputs, numOutputs) * 82 + 18;
 
@@ -90,3 +86,5 @@ export function TransactionNode({
     </TooltipProvider>
   );
 }
+
+export default memo(TransactionNode);

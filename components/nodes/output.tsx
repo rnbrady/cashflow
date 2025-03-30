@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
 import { Handle, NodeProps, Position } from "@xyflow/react";
 import {
   Tooltip,
@@ -11,7 +11,7 @@ import {
 import { hashToColor, getScriptType, tryDecodeCashAddress } from "@/lib/utils";
 import { OutputNodeType } from "@/lib/types";
 
-export function OutputNode({
+function OutputNode({
   data: { output },
   isConnectable,
 }: NodeProps<OutputNodeType>) {
@@ -86,3 +86,5 @@ export function OutputNode({
     </TooltipProvider>
   );
 }
+
+export default memo(OutputNode);
