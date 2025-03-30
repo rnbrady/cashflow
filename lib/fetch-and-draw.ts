@@ -23,12 +23,12 @@ export async function fetchAndDraw({
     type: "transaction",
     data: {
       transaction: transaction,
+      placeholder: false,
     },
     position: {
       x: 0,
       y: 0,
     },
-    style: { width: 400 },
   };
 
   const inputs = transaction.inputs.map((input) => ({
@@ -36,6 +36,7 @@ export async function fetchAndDraw({
     type: "input",
     data: {
       input: input,
+      placeholder: false,
     },
     parentId: input.transaction.hash,
     extent: "parent" as const,
@@ -52,6 +53,7 @@ export async function fetchAndDraw({
     data: {
       transaction: {
         hash: input.outpoint_transaction_hash,
+        minOutputs: Number(input.outpoint_index) + 1,
       },
       placeholder: true,
     },
@@ -59,7 +61,6 @@ export async function fetchAndDraw({
       x: -500,
       y: 0,
     },
-    style: { width: 400 },
   }));
 
   const upstreamOutputs = transaction.inputs.map((input) => ({
@@ -99,6 +100,7 @@ export async function fetchAndDraw({
     type: "output",
     data: {
       output: output,
+      placeholder: false,
     },
     parentId: output.transaction_hash,
     extent: "parent" as const,
@@ -117,6 +119,7 @@ export async function fetchAndDraw({
         data: {
           transaction: {
             hash: output.spent_by![0].transaction.hash,
+            minInputs: Number(output.spent_by![0].input_index) + 1,
           },
           placeholder: true,
         },
@@ -124,7 +127,6 @@ export async function fetchAndDraw({
           x: 500,
           y: 0,
         },
-        style: { width: 400 },
     }))
 
 

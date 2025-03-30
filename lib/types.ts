@@ -54,6 +54,8 @@ export interface Transaction {
   block_inclusions: BlockInclusion[];
   inputs: Input[];
   outputs: Output[];
+  minInputs?: number;
+  minOutputs?: number;
 }
 
 export interface ParentTransaction {
@@ -68,22 +70,29 @@ export interface ParentTransaction {
 } 
 
 export type InputNodeType = Node<{
-  input: Input
+  input: Input,
+  placeholder: false
 } | {
   placeholder: true,
   input: Partial<Input>
 }, 'input'> 
 
 export type OutputNodeType = Node<{
-  output: Output
+  output: Output,
+  placeholder: false
 } | {
   placeholder: true,
   output: Partial<Output>
 }, 'output'> 
 
 export type TransactionNodeType = Node<{
-  transaction: Transaction
+  transaction: Transaction,
+  placeholder: false
 } | {
   placeholder: true,
   transaction: Partial<Transaction>
 }, 'transaction'> 
+
+export function isTransactionNode(node: Node): node is TransactionNodeType {
+  return node.type === "transaction";
+}
