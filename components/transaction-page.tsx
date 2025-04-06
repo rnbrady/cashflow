@@ -10,6 +10,7 @@ import {
   ValueUnit,
 } from "@/lib/utils";
 import { Transaction } from "@/lib/types";
+import { Fingerprint } from "lucide-react";
 
 interface TransactionPageProps {
   transaction: Transaction;
@@ -239,7 +240,9 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Tokens</p>
+                        <Fingerprint className="w-2 h-2" />
                         <p className="text-sm">
+                          {output.token_category}
                           {output.nonfungible_token_capability}{" "}
                           {output.nonfungible_token_commitment}{" "}
                           {output.fungible_token_amount}

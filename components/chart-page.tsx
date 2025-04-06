@@ -10,6 +10,9 @@ import {
   BackgroundVariant,
   MarkerType,
   useReactFlow,
+  BaseEdge,
+  SimpleBezierEdge,
+  SmoothStepEdge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -23,6 +26,8 @@ import InputNode from "@/components/nodes/input";
 import OutputNode from "@/components/nodes/output";
 import { fetchAndDraw } from "@/lib/fetch-and-draw";
 import { cn } from "@/lib/utils";
+import TokenEdge from "@/components/edges/token";
+import { DoubleBezierEdge } from "@/components/edges/DoubleBezierEdge";
 
 const raleway = Raleway({
   weight: ["700"],
@@ -56,6 +61,13 @@ export function ChartPage() {
       transaction: TransactionNode,
       input: InputNode,
       output: OutputNode,
+    }),
+    []
+  );
+
+  const edgeTypes = useMemo(
+    () => ({
+      token: DoubleBezierEdge,
     }),
     []
   );
@@ -118,7 +130,7 @@ export function ChartPage() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">
-      <header className="bg-white border-b p-4 shadow-sm">
+      <header className="bg-white border-b px-4 pt-2 pb-3 shadow-sm">
         <div className="flex justify-between flex-col md:flex-row md:items-end gap-4">
           <div className="shrink-0 text-center md:text-left">
             <h1 className={cn("text-xl text-gray-800 ", raleway.className)}>
@@ -203,13 +215,16 @@ export function ChartPage() {
                 color: "#10b981",
               },
               style: { stroke: "#10b981", strokeWidth: 2 },
+              secondaryStyle: { stroke: "#10b981", strokeWidth: 2 },
               labelStyle: { fill: "#10b981" },
               labelBgPadding: [2, 1],
               labelBgBorderRadius: 2,
               labelShowBg: true,
               labelBgStyle: { fill: "#ffffff" },
+              type: "token",
             }))}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
