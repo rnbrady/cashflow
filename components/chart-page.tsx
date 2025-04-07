@@ -10,6 +10,7 @@ import {
   BackgroundVariant,
   MarkerType,
   useReactFlow,
+  Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -22,8 +23,8 @@ import TransactionNode from "@/components/nodes/transaction";
 import InputNode from "@/components/nodes/input";
 import OutputNode from "@/components/nodes/output";
 import { fetchAndDraw } from "@/lib/fetch-and-draw";
-import { cn } from "@/lib/utils";
-
+import { cn, hashToColor } from "@/lib/utils";
+import { Output, SpentEdgeType } from "@/lib/types";
 const raleway = Raleway({
   weight: ["700"],
   subsets: ["latin"],
@@ -70,6 +71,34 @@ export function ChartPage() {
     addNodesAndEdges,
     clear,
   } = useStore(useShallow(selector));
+
+  const styledEdges = useMemo(
+    () =>
+      edges.map((edge) => {
+        const tokenCategory = edge.data?.output?.token_category;
+        const color = tokenCategory ? hashToColor(tokenCategory) : "#10b981";
+        return {
+          ...edge,
+          label: edge.label ? Number(edge.label).toLocaleString() : edge.label,
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color,
+          },
+          style: {
+            stroke: color,
+            strokeWidth: 2,
+          },
+          labelStyle: {
+            fill: color,
+          },
+          labelBgPadding: [2, 1] as [number, number],
+          labelBgBorderRadius: 2,
+          labelShowBg: true,
+          labelBgStyle: { fill: "#ffffff" },
+        };
+      }),
+    [edges]
+  );
 
   const handleSearch = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -193,22 +222,7 @@ export function ChartPage() {
         <div className="flex-1 h-full">
           <ReactFlow
             nodes={nodes}
-            edges={edges.map((edge) => ({
-              ...edge,
-              label: edge.label
-                ? Number(edge.label).toLocaleString()
-                : edge.label,
-              markerEnd: {
-                type: MarkerType.ArrowClosed,
-                color: "#10b981",
-              },
-              style: { stroke: "#10b981", strokeWidth: 2 },
-              labelStyle: { fill: "#10b981" },
-              labelBgPadding: [2, 1],
-              labelBgBorderRadius: 2,
-              labelShowBg: true,
-              labelBgStyle: { fill: "#ffffff" },
-            }))}
+            edges={styledEdges}
             nodeTypes={nodeTypes}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}

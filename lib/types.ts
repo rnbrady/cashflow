@@ -1,4 +1,4 @@
-import { Node } from "@xyflow/react"
+import { Edge, Node } from "@xyflow/react";
 
 export interface Block {
   height: string;
@@ -37,6 +37,7 @@ export interface Input {
     hash: string;
   };
   input_index: string;
+  outpoint: Output;
   outpoint_transaction_hash: string;
   outpoint_index: string;
   value_satoshis: string | null;
@@ -67,31 +68,50 @@ export interface ParentTransaction {
       timestamp: string;
     };
   }>;
-} 
+}
 
-export type InputNodeType = Node<{
-  input: Input,
-  placeholder: false
-} | {
-  placeholder: true,
-  input: Partial<Input>
-}, 'input'> 
+export type InputNodeType = Node<
+  | {
+      input: Input;
+      placeholder: false;
+    }
+  | {
+      placeholder: true;
+      input: Partial<Input>;
+    },
+  "input"
+>;
 
-export type OutputNodeType = Node<{
-  output: Output,
-  placeholder: false
-} | {
-  placeholder: true,
-  output: Partial<Output>
-}, 'output'> 
+export type OutputNodeType = Node<
+  | {
+      output: Output;
+      placeholder: false;
+    }
+  | {
+      placeholder: true;
+      output: Partial<Output>;
+    },
+  "output"
+>;
 
-export type TransactionNodeType = Node<{
-  transaction: Transaction,
-  placeholder: false
-} | {
-  placeholder: true,
-  transaction: Partial<Transaction>
-}, 'transaction'> 
+export type TransactionNodeType = Node<
+  | {
+      transaction: Transaction;
+      placeholder: false;
+    }
+  | {
+      placeholder: true;
+      transaction: Partial<Transaction>;
+    },
+  "transaction"
+>;
+
+export type SpentEdgeType = Edge<
+  {
+    output: Output;
+  },
+  "spent"
+>;
 
 export function isTransactionNode(node: Node): node is TransactionNodeType {
   return node.type === "transaction";

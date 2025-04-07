@@ -1,7 +1,7 @@
 import { graphql } from "chaingraph-ts";
 
-export const GET_TRANSACTION_DETAILS = graphql(`query
-  GetTransactionDetails($txHash: bytea!) {
+export const GET_TRANSACTION_DETAILS = graphql(`
+  query GetTransactionDetails($txHash: bytea!) {
     transaction(where: { hash: { _eq: $txHash } }) {
       hash
       encoded_hex
@@ -21,6 +21,14 @@ export const GET_TRANSACTION_DETAILS = graphql(`query
           hash
         }
         input_index
+        outpoint {
+          transaction_hash
+          output_index
+          token_category
+          nonfungible_token_capability
+          nonfungible_token_commitment
+          fungible_token_amount
+        }
         outpoint_transaction_hash
         outpoint_index
         sequence_number
@@ -48,8 +56,8 @@ export const GET_TRANSACTION_DETAILS = graphql(`query
   }
 `);
 
-export const GET_PARENT_TRANSACTION = graphql(`query 
-  GetParentTransaction($txHash: bytea!) {
+export const GET_PARENT_TRANSACTION = graphql(`
+  query GetParentTransaction($txHash: bytea!) {
     transaction(where: { hash: { _eq: $txHash } }) {
       size_bytes
       fee_satoshis
