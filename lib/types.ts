@@ -37,7 +37,7 @@ export interface Input {
     hash: string;
   };
   input_index: string;
-  outpoint: Output;
+  outpoint?: Partial<Output> | null;
   outpoint_transaction_hash: string;
   outpoint_index: string;
   value_satoshis: string | null;
@@ -108,7 +108,7 @@ export type TransactionNodeType = Node<
 
 export type SpentEdgeType = Edge<
   {
-    output: Output;
+    output: Partial<Output> | null | undefined;
   },
   "spent"
 >;

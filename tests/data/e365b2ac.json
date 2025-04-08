@@ -1,0 +1,178 @@
+{
+  "hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
+  "encoded_hex": "0200000003bf57d19a9686afc6cd76ac0827940f65a63945a4c8288fba08d7055f2d2a8725000000003251302094e43e754df7598ca267bfab6cfd20adc290e8f3baa83b562f1777e4c794541051ce8851d0009d6300cdc0c7886851feffffffbf57d19a9686afc6cd76ac0827940f65a63945a4c8288fba08d7055f2d2a8725010000006441087d42a4e6e929038e9b237fbfb77e55c1284ce693760a33090810ea70f65c10aa0660a85c85d5bfa7f3522eec670fb6a2c5f039bd2d4165c0ead71d66a13e57412103ef5d6aa43de4c9bc8a1b7f2c2e325e0b9b2866782779248224be4d2c0c630f5dfeffffff8d6696de5d000834c1bd75698e78c4b5f28ccadfb2c5b238d3f53b720b91e03b01000000644109a1af1642f811185d8c2d07d0986e843ef1f80aa1bc844e291d20069c11f658570f9b98afbfed893dba91109c7f64d12de0d64403f13c67fd12c7e293f62abe412103ef5d6aa43de4c9bc8a1b7f2c2e325e0b9b2866782779248224be4d2c0c630f5dfeffffff04e8030000000000003bef91766574fa467a12b47e0ece6417c3654f579e3d4e43b2ab2d1a3c24256b4f5a620101a91453be7acaf98c40b09a65f0566d13939cb247e93487e8030000000000003def94e43e754df7598ca267bfab6cfd20adc290e8f3baa83b562f1777e4c794541060010076a91486403657f0c7b1789eb23472f10725061940f7b488ace8030000000000003def91766574fa467a12b47e0ece6417c3654f579e3d4e43b2ab2d1a3c24256b4f5a60010176a91486403657f0c7b1789eb23472f10725061940f7b488acb0d92300000000001976a91486403657f0c7b1789eb23472f10725061940f7b488acb1970c00",
+  "size_bytes": "625",
+  "is_coinbase": false,
+  "locktime": "825265",
+  "fee_satoshis": "1186",
+  "block_inclusions": [
+    {
+      "block": {
+        "height": "825266",
+        "hash": "\\x000000000000000002b859c00f526276a9538e4a6bb728f551a45a4135d766c7",
+        "timestamp": "1703529437",
+        "__typename": "block"
+      },
+      "__typename": "block_transaction"
+    }
+  ],
+  "inputs": [
+    {
+      "transaction": {
+        "hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
+        "__typename": "transaction"
+      },
+      "input_index": "0",
+      "outpoint": {
+        "transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
+        "output_index": "0",
+        "token_category": "\\x5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691",
+        "nonfungible_token_capability": "minting",
+        "nonfungible_token_commitment": "\\x",
+        "fungible_token_amount": "0",
+        "__typename": "output"
+      },
+      "outpoint_transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
+      "outpoint_index": "0",
+      "sequence_number": "4294967294",
+      "value_satoshis": "1000",
+      "unlocking_bytecode": "\\x51302094e43e754df7598ca267bfab6cfd20adc290e8f3baa83b562f1777e4c794541051ce8851d0009d6300cdc0c7886851",
+      "__typename": "input"
+    },
+    {
+      "transaction": {
+        "hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
+        "__typename": "transaction"
+      },
+      "input_index": "1",
+      "outpoint": {
+        "transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
+        "output_index": "1",
+        "token_category": "\\x105494c7e477172f563ba8baf3e890c2ad20fd6cabbf67a28c59f74d753ee494",
+        "nonfungible_token_capability": "none",
+        "nonfungible_token_commitment": "\\x00",
+        "fungible_token_amount": "0",
+        "__typename": "output"
+      },
+      "outpoint_transaction_hash": "\\x25872a2d5f05d708ba8f28c8a44539a6650f942708ac76cdc6af86969ad157bf",
+      "outpoint_index": "1",
+      "sequence_number": "4294967294",
+      "value_satoshis": "1000",
+      "unlocking_bytecode": "\\x41087d42a4e6e929038e9b237fbfb77e55c1284ce693760a33090810ea70f65c10aa0660a85c85d5bfa7f3522eec670fb6a2c5f039bd2d4165c0ead71d66a13e57412103ef5d6aa43de4c9bc8a1b7f2c2e325e0b9b2866782779248224be4d2c0c630f5d",
+      "__typename": "input"
+    },
+    {
+      "transaction": {
+        "hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
+        "__typename": "transaction"
+      },
+      "input_index": "2",
+      "outpoint": {
+        "transaction_hash": "\\x3be0910b723bf5d338b2c5b2dfca8cf2b5c4788e6975bdc13408005dde96668d",
+        "output_index": "1",
+        "token_category": null,
+        "nonfungible_token_capability": null,
+        "nonfungible_token_commitment": null,
+        "fungible_token_amount": null,
+        "__typename": "output"
+      },
+      "outpoint_transaction_hash": "\\x3be0910b723bf5d338b2c5b2dfca8cf2b5c4788e6975bdc13408005dde96668d",
+      "outpoint_index": "1",
+      "sequence_number": "4294967294",
+      "value_satoshis": "2351674",
+      "unlocking_bytecode": "\\x4109a1af1642f811185d8c2d07d0986e843ef1f80aa1bc844e291d20069c11f658570f9b98afbfed893dba91109c7f64d12de0d64403f13c67fd12c7e293f62abe412103ef5d6aa43de4c9bc8a1b7f2c2e325e0b9b2866782779248224be4d2c0c630f5d",
+      "__typename": "input"
+    }
+  ],
+  "outputs": [
+    {
+      "transaction_hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
+      "output_index": "0",
+      "value_satoshis": "1000",
+      "locking_bytecode": "\\xa91453be7acaf98c40b09a65f0566d13939cb247e93487",
+      "locking_bytecode_pattern": "a91487",
+      "nonfungible_token_capability": "minting",
+      "nonfungible_token_commitment": "\\x01",
+      "fungible_token_amount": "0",
+      "token_category": "\\x5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691",
+      "spent_by": [
+        {
+          "input_index": "0",
+          "transaction": {
+            "hash": "\\x45f7ba33678a86e2cc35e34292e0d14d6048a5f9610450d7b35b80083109d893",
+            "__typename": "transaction"
+          },
+          "__typename": "input"
+        }
+      ],
+      "__typename": "output"
+    },
+    {
+      "transaction_hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
+      "output_index": "1",
+      "value_satoshis": "1000",
+      "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",
+      "locking_bytecode_pattern": "76a91488ac",
+      "nonfungible_token_capability": "none",
+      "nonfungible_token_commitment": "\\x00",
+      "fungible_token_amount": "0",
+      "token_category": "\\x105494c7e477172f563ba8baf3e890c2ad20fd6cabbf67a28c59f74d753ee494",
+      "spent_by": [
+        {
+          "input_index": "1",
+          "transaction": {
+            "hash": "\\x45f7ba33678a86e2cc35e34292e0d14d6048a5f9610450d7b35b80083109d893",
+            "__typename": "transaction"
+          },
+          "__typename": "input"
+        }
+      ],
+      "__typename": "output"
+    },
+    {
+      "transaction_hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
+      "output_index": "2",
+      "value_satoshis": "1000",
+      "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",
+      "locking_bytecode_pattern": "76a91488ac",
+      "nonfungible_token_capability": "none",
+      "nonfungible_token_commitment": "\\x01",
+      "fungible_token_amount": "0",
+      "token_category": "\\x5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691",
+      "spent_by": [
+        {
+          "input_index": "0",
+          "transaction": {
+            "hash": "\\x7df6a0e8d09defaa052704c13a0b89baee4ad82b1e7205d079914b5edb39058a",
+            "__typename": "transaction"
+          },
+          "__typename": "input"
+        }
+      ],
+      "__typename": "output"
+    },
+    {
+      "transaction_hash": "\\xe365b2acecf035a6e291125c29e9edcc2606e70859512d3968bf61c5e8c9a0d5",
+      "output_index": "3",
+      "value_satoshis": "2349488",
+      "locking_bytecode": "\\x76a91486403657f0c7b1789eb23472f10725061940f7b488ac",
+      "locking_bytecode_pattern": "76a91488ac",
+      "nonfungible_token_capability": null,
+      "nonfungible_token_commitment": null,
+      "fungible_token_amount": null,
+      "token_category": null,
+      "spent_by": [
+        {
+          "input_index": "2",
+          "transaction": {
+            "hash": "\\x45f7ba33678a86e2cc35e34292e0d14d6048a5f9610450d7b35b80083109d893",
+            "__typename": "transaction"
+          },
+          "__typename": "input"
+        }
+      ],
+      "__typename": "output"
+    }
+  ],
+  "__typename": "transaction"
+}

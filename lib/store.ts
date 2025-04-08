@@ -11,20 +11,20 @@ import {
   type Viewport,
 } from "@xyflow/react";
 import Dagre from "@dagrejs/dagre";
-import { TransactionNodeType, isTransactionNode } from "./types";
+import { Output, TransactionNodeType, isTransactionNode } from "./types";
 
 export interface ChartState {
   nodes: Node[];
-  edges: Edge[];
+  edges: Edge<{ output?: Output }>[];
   viewport: Viewport;
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
   setNodes: (nodes: Node[]) => void;
-  setEdges: (edges: Edge[]) => void;
+  setEdges: (edges: Edge<{ output?: Output }>[]) => void;
   setViewport: (viewport: Viewport) => void;
   addNodes: (nodes: Node[]) => void;
-  addEdges: (edges: Edge[]) => void;
+  addEdges: (edges: Edge<{ output?: Output }>[]) => void;
   layout: () => void;
   addNodesAndEdges: ({
     newNodes,
@@ -32,7 +32,7 @@ export interface ChartState {
     layout,
   }: {
     newNodes: Node[];
-    newEdges: Edge[];
+    newEdges: Edge<{ output?: Output }>[];
     layout?: boolean;
   }) => void;
   clear: () => void;
@@ -78,7 +78,7 @@ export const useStore = create<ChartState>((set, get) => ({
 
     set({ nodes });
   },
-  addEdges: (newEdges: Edge[]) => {
+  addEdges: (newEdges) => {
     const currentEdges = get().edges;
 
     const edges = upsertEdges({ currentEdges, newEdges });
@@ -94,7 +94,7 @@ export const useStore = create<ChartState>((set, get) => ({
     layout = false,
   }: {
     newNodes: Node[];
-    newEdges: Edge[];
+    newEdges: Edge<{ output?: Output }>[];
     layout?: boolean;
   }) => {
     const state = get();
@@ -114,8 +114,8 @@ function upsertEdges({
   currentEdges,
   newEdges,
 }: {
-  currentEdges: Edge[];
-  newEdges: Edge[];
+  currentEdges: Edge<{ output?: Output }>[];
+  newEdges: Edge<{ output?: Output }>[];
 }) {
   const updatedEdges = [...currentEdges];
 
@@ -216,7 +216,13 @@ function upsertNodes({
   return updatedNodes;
 }
 
-function layoutNodes({ nodes, edges }: { nodes: Node[]; edges: Edge[] }) {
+function layoutNodes({
+  nodes,
+  edges,
+}: {
+  nodes: Node[];
+  edges: Edge<{ output?: Output }>[];
+}) {
   const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
   g.setGraph({ rankdir: "LR", ranksep: 150, ranker: "longest-path" });

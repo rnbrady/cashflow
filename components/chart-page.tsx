@@ -24,7 +24,8 @@ import InputNode from "@/components/nodes/input";
 import OutputNode from "@/components/nodes/output";
 import { fetchAndDraw } from "@/lib/fetch-and-draw";
 import { cn, hashToColor } from "@/lib/utils";
-import { Output, SpentEdgeType } from "@/lib/types";
+import { Output } from "@/lib/types";
+
 const raleway = Raleway({
   weight: ["700"],
   subsets: ["latin"],
@@ -74,7 +75,7 @@ export function ChartPage() {
 
   const styledEdges = useMemo(
     () =>
-      edges.map((edge) => {
+      edges.map((edge: Edge<{ output?: Output }>) => {
         const tokenCategory = edge.data?.output?.token_category;
         const color = tokenCategory ? hashToColor(tokenCategory) : "#10b981";
         return {
