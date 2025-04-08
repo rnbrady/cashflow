@@ -5,7 +5,7 @@ import { GET_TRANSACTION_DETAILS } from "@/lib/queries";
 // Data source configuration
 export type DataSource = "mock" | "mainnet";
 
-let currentDataSource: DataSource = "mock";
+let currentDataSource: DataSource = "mainnet";
 
 export function setDataSource(source: DataSource) {
   currentDataSource = source;
