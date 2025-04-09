@@ -111,7 +111,6 @@ export async function fetchAndDraw({
       id: `${input.transaction.hash}-edge-${input.input_index}`,
       source: `${input.outpoint_transaction_hash}-output-${input.outpoint_index}`,
       target: `${input.transaction.hash}-input-${input.input_index}`,
-      label: `${input.value_satoshis}`,
       data: {
         output: input.outpoint,
       },
@@ -188,7 +187,6 @@ export async function fetchAndDraw({
       target: `${output.spent_by![0].transaction.hash}-input-${
         output.spent_by![0].input_index
       }`,
-      label: `${output.value_satoshis}`,
       data: {
         output: output,
       },

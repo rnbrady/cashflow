@@ -1,10 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import {
-  hexToBin,
-  lockingBytecodeToCashAddress,
-  disassembleBytecodeBCH,
-} from "@bitauth/libauth";
+import { hexToBin, disassembleBytecodeBCH } from "@bitauth/libauth";
+
+import { lockingBytecodeToCashAddress } from "@/vendor/cash-address/locking-bytecode";
 
 export function formatHexWithNewlines(hex: string): string {
   const charsPerLine = 128; // 64 bytes = 128 hex chars
@@ -24,15 +22,24 @@ export function tryDecodeCashAddress(
   try {
     // Remove \x prefix if present
     const cleanHex = lockingBytecode.replace(/^\\x/, "");
+
     const bytecode = hexToBin(cleanHex);
-    const result = lockingBytecodeToCashAddress(bytecode, "bitcoincash");
-    if (typeof result !== "string") {
-      return "-";
+
+    const result = lockingBytecodeToCashAddress({
+      prefix: "bitcoincash",
+      bytecode,
+      tokenSupport: true,
+    });
+
+    if (typeof result === "string") {
+      console.error("Error decoding address:", lockingBytecode, result);
+      return "Could not decode";
     }
-    return result;
+
+    return result.address;
   } catch (e) {
     console.error("Error decoding address:", e);
-    return "Could not decode address";
+    return "Could not decode";
   }
 }
 
@@ -100,6 +107,9 @@ export function getScriptType(
       if (script === "a91487") {
         return "P2SH (Pay to Script Hash)";
       }
+      if (script === "aa2087") {
+        return "P2SH32 (Pay to 32-byte Script Hash)";
+      }
       if (script.startsWith("6a")) {
         return "OP_RETURN (Data Carrier)";
       }
@@ -111,6 +121,9 @@ export function getScriptType(
       }
       if (script === "a91487") {
         return "P2SH";
+      }
+      if (script === "aa2087") {
+        return "P2SH32";
       }
       if (script.startsWith("6a")) {
         return "OP_RETURN";
@@ -159,6 +172,26 @@ export const truncateHash = (
   const cleanHash = hash.replace(/^\\x/, "");
   return `${cleanHash.substring(0, length)}...${cleanHash.substring(
     cleanHash.length - length
+  )}`;
+};
+
+export const truncateMiddle = (
+  string: string | undefined | null,
+  firstLast: number = 4
+) => {
+  if (!string) return "";
+  const cleanString = string.replace(/^\\x/, "");
+
+  if (cleanString.length <= firstLast * 2) return cleanString;
+
+  if (cleanString.startsWith("0x")) {
+    return `${cleanString.substring(0, firstLast + 1)}…${cleanString.substring(
+      cleanString.length - firstLast + 1
+    )}`;
+  }
+
+  return `${cleanString.substring(0, firstLast)}…${cleanString.substring(
+    cleanString.length - firstLast
   )}`;
 };
 

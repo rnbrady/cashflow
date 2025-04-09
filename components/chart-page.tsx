@@ -77,10 +77,11 @@ export function ChartPage() {
     () =>
       edges.map((edge: Edge<{ output?: Output }>) => {
         const tokenCategory = edge.data?.output?.token_category;
-        const color = tokenCategory ? hashToColor(tokenCategory) : "#10b981";
+        const color = tokenCategory
+          ? hashToColor(tokenCategory)
+          : "var(--color-emerald-500)";
         return {
           ...edge,
-          label: edge.label ? Number(edge.label).toLocaleString() : edge.label,
           markerEnd: {
             type: MarkerType.ArrowClosed,
             color,
