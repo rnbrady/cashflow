@@ -96,7 +96,7 @@ export async function fetchAndDraw({
       extent: "parent" as const,
       position: {
         x: 270,
-        y: 45 + Number(input.outpoint_index) * 85,
+        y: 45 + Number(input.outpoint_index) * 90,
       },
       style: { width: 180, padding: "0px", border: "none" },
     }));
@@ -127,7 +127,7 @@ export async function fetchAndDraw({
     extent: "parent" as const,
     position: {
       x: 270,
-      y: 45 + Number(output.output_index) * 85,
+      y: 45 + Number(output.output_index) * 90,
     },
     style: { width: 180, padding: "0px", border: "none" },
   }));
