@@ -222,3 +222,24 @@ export const getContrastColor = (hexColor: string) => {
   // Return black or white based on brightness
   return brightness > 128 ? "#000000" : "#ffffff";
 };
+
+export const decodeOpReturnContents = (lockingBytecode: string) => {
+  const asm = parseScript(lockingBytecode);
+
+  if (asm.startsWith("OP_RETURN OP_PUSHBYTES_4 0x42434d52 OP_PUSHBYTES_32")) {
+    const words = asm.split(" ");
+
+    const hexhash = words[4];
+
+    const uris = words
+      .slice(6)
+      .filter((word) => word.startsWith("0x"))
+      .map((hex) => Buffer.from(hex.slice(2), "hex").toString("utf-8"));
+
+    return `BCMR ${hexhash};${uris.join(";")}`;
+  }
+
+  return Buffer.from(lockingBytecode.replace(/\\x/g, ""), "hex").toString(
+    "utf8"
+  );
+};

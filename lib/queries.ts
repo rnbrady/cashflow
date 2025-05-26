@@ -24,16 +24,21 @@ export const GET_TRANSACTION_DETAILS = graphql(`
         outpoint {
           transaction_hash
           output_index
+          value_satoshis
           token_category
           nonfungible_token_capability
           nonfungible_token_commitment
           fungible_token_amount
+          locking_bytecode
+          locking_bytecode_pattern
         }
         outpoint_transaction_hash
         outpoint_index
         sequence_number
         value_satoshis
         unlocking_bytecode
+        unlocking_bytecode_pattern
+        redeem_bytecode_pattern
       }
       outputs {
         transaction_hash

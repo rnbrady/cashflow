@@ -8,6 +8,10 @@ import {
 import { fetchTransactionData } from "@/lib/chaingraph-api";
 import { Edge, Node } from "@xyflow/react";
 
+const defaultInputHeight = 93;
+
+const defaultOutputHeight = 93;
+
 export async function fetchAndDraw({
   transactionHash,
   addNodesAndEdges,
@@ -49,9 +53,10 @@ export async function fetchAndDraw({
     extent: "parent" as const,
     position: {
       x: 0,
-      y: 45 + Number(input.input_index) * 85,
+      y: 45 + Number(input.input_index) * defaultInputHeight,
     },
     style: { width: 180, padding: "0px", border: "none" },
+    dragHandle: "nonexistent-class-to-prevent-dragging",
   }));
 
   const upstreamTransactions = transaction.inputs
@@ -96,7 +101,7 @@ export async function fetchAndDraw({
       extent: "parent" as const,
       position: {
         x: 270,
-        y: 45 + Number(input.outpoint_index) * 90,
+        y: 45 + Number(input.outpoint_index) * defaultOutputHeight,
       },
       style: { width: 180, padding: "0px", border: "none" },
     }));
@@ -127,9 +132,10 @@ export async function fetchAndDraw({
     extent: "parent" as const,
     position: {
       x: 270,
-      y: 45 + Number(output.output_index) * 90,
+      y: 45 + Number(output.output_index) * defaultOutputHeight,
     },
     style: { width: 180, padding: "0px", border: "none" },
+    dragHandle: "nonexistent-class-to-prevent-dragging",
   }));
 
   const downstreamTransactions: TransactionNodeType[] = transaction.outputs
@@ -172,7 +178,7 @@ export async function fetchAndDraw({
       extent: "parent" as const,
       position: {
         x: 0,
-        y: 45 + Number(output.spent_by![0].input_index) * 85,
+        y: 45 + Number(output.spent_by![0].input_index) * defaultInputHeight,
       },
       style: { width: 180, padding: "0px", border: "none" },
     }));

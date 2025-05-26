@@ -243,6 +243,18 @@ function layoutNodes({
 
   Dagre.layout(g);
 
+  nodes
+    .filter((node) => node.type === "input")
+    .forEach((node) => {
+      console.log("input height:", node.measured?.height);
+    });
+
+  nodes
+    .filter((node) => node.type === "output")
+    .forEach((node) => {
+      console.log("output height:", node.measured?.height);
+    });
+
   return {
     nodes: nodes.map((node) => {
       const position = g.node(node.id);

@@ -25,7 +25,9 @@ function TransactionNode({
     transaction.outputs?.length || 0
   );
 
-  const contentHeight = Math.max(numInputs, numOutputs) * 82 + 18;
+  const contentHeight = Math.max(numInputs, numOutputs) * 93 + 8;
+
+  console.log("contentHeight", contentHeight);
 
   const cleanHash = transaction.hash?.replace(/\\x/g, "") || "";
 
@@ -34,7 +36,7 @@ function TransactionNode({
       <div className={`transaction-node`} style={{ width: 400 }}>
         {/* Transaction container */}
         <div
-          className={`relative rounded-lg border border-gray-300 bg-white overflow-hidden`}
+          className={`relative rounded-lg border border-gray-300 bg-white transparency:bg-white/90 overflow-hidden`}
         >
           {/* Transaction header with hash-based color */}
           <div
@@ -44,11 +46,8 @@ function TransactionNode({
               color: placeholder ? "white" : textColor,
             }}
           >
-            <div className="text-sm font-medium flex">
-              <span className="max-w-[160px] truncate after:content-['...']">
-                {cleanHash}
-              </span>
-              <span className="">{cleanHash.slice(-20)}</span>
+            <div className="text-sm font-medium truncate group-hover:mr-6">
+              {cleanHash}
             </div>
             <Button
               onClick={(e) => {
@@ -57,7 +56,7 @@ function TransactionNode({
               }}
               variant="ghost"
               size="icon"
-              className="absolute right-2 top-2 h-6 w-6 hover:bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute right-2 top-2 h-6 w-6 hover:bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"
               style={{ color: textColor }}
             >
               <Copy className="h-4 w-4" />
@@ -79,6 +78,18 @@ function TransactionNode({
             </div>
             <div>
               {transaction.locktime ? `locktime ${transaction.locktime}` : ""}
+            </div>
+            <div>
+              {transaction.fee_satoshis ? (
+                <>
+                  {`fee `}
+                  <span className="text-emerald-600 text-[10px]">
+                    {Number(transaction.fee_satoshis).toLocaleString()}
+                  </span>
+                </>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>

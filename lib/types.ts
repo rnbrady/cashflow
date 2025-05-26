@@ -37,12 +37,14 @@ export interface Input {
     hash: string;
   };
   input_index: string;
-  outpoint?: Partial<Output> | null;
+  outpoint?: Output;
   outpoint_transaction_hash: string;
   outpoint_index: string;
   value_satoshis: string | null;
   sequence_number: string;
   unlocking_bytecode: string;
+  unlocking_bytecode_pattern: string | null;
+  redeem_bytecode_pattern: string | null;
 }
 
 export interface Transaction {

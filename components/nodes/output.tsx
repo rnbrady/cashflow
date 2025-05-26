@@ -1,7 +1,8 @@
 "use client";
 
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import { Handle, NodeProps, Position } from "@xyflow/react";
+import { Lock } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -13,23 +14,22 @@ import {
   getScriptType,
   tryDecodeCashAddress,
   truncateMiddle,
+  decodeOpReturnContents,
 } from "@/lib/utils";
 import { OutputNodeType } from "@/lib/types";
+import "./overrides.css";
+import { TokenData } from "../token-data";
+import { ScriptTypeBadge } from "../script-type-badge";
 
 function OutputNode({
   data: { output },
   isConnectable,
 }: NodeProps<OutputNodeType>) {
+  const [decodeOpReturn, setDecodeOpReturn] = useState<boolean>(false);
+
   const borderColor = hashToColor(output.spent_by?.[0]?.transaction.hash);
 
   const scriptType = getScriptType(output.locking_bytecode_pattern);
-
-  // Determine badge color based on script type
-  let badgeColor = "bg-gray-100 text-gray-800";
-  if (scriptType === "P2PKH") badgeColor = "bg-green-100 text-green-800";
-  if (scriptType === "P2SH") badgeColor = "bg-purple-100 text-purple-800";
-  if (scriptType === "P2SH32") badgeColor = "bg-fuchsia-100 text-fuchsia-800";
-  if (scriptType === "OP_RETURN") badgeColor = "bg-blue-100 text-blue-800";
 
   const address = tryDecodeCashAddress(output.locking_bytecode);
 
@@ -37,15 +37,19 @@ function OutputNode({
     ? hashToColor(output.token_category)
     : "bg-gray-100 text-gray-800";
 
+  const toggleDecodeOpReturns = () => {
+    setDecodeOpReturn((decodeOpReturn) => !decodeOpReturn);
+  };
+
   return (
     <TooltipProvider>
       <div className="output-node">
         <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              className="p-2 rounded-md bg-gray-100 border-r-4 shadow-md text-xs text-right"
-              style={{ borderRightColor: borderColor }}
-            >
+          <div
+            className="p-2 rounded-md bg-gray-100 transparency:bg-gray-200/50 border-r-4 shadow-md text-xs text-right"
+            style={{ borderRightColor: borderColor }}
+          >
+            <TooltipTrigger asChild>
               <div className="font-medium mb-1 flex justify-between items-center">
                 <span className="font-medium text-gray-500">
                   #{output.output_index}
@@ -54,103 +58,96 @@ function OutputNode({
                   {Number(output.value_satoshis).toLocaleString()}
                 </span>
               </div>
+            </TooltipTrigger>
 
-              <div className="text-gray-500">
-                <div className="flex justify-between text-[10px] mb-1 gap-2">
-                  <span className={`rounded ${badgeColor} px-1`}>
-                    {scriptType}
-                  </span>
-                  {output.locking_bytecode && (
-                    <div className="text-[10px] truncate">
-                      {address.replace("bitcoincash:", "")}
-                    </div>
-                  )}
+            <div className="text-gray-500">
+              <div className="flex justify-between text-[10px] mb-1 gap-2 items-start">
+                <div className="flex items-center gap-0.5">
+                  <Lock className="w-2.5 h-2.5 shrink-0" />
+                  <ScriptTypeBadge output={output} />
                 </div>
-              </div>
+                {output.locking_bytecode && (
+                  <div className="text-[10px] truncate hover:overflow-visible hover:bg-gray-100 hover:z-[2147483647] hover:whitespace-pre hover:absolute hover:translate-x-22">
+                    {address === "Could not decode" ? (
+                      <div
+                        onClick={toggleDecodeOpReturns}
+                        className="flex gap-1 hover:gap-0 hover:flex-col items-start"
+                      >
+                        {decodeOpReturn ? (
+                          decodeOpReturnContents(output.locking_bytecode)
+                            .split(";")
+                            .map((field) => {
+                              if (
+                                field.startsWith("https://") ||
+                                field.startsWith("http://")
+                              ) {
+                                return (
+                                  <a
+                                    href={field}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    {field}
+                                  </a>
+                                );
+                              }
 
-              {output.token_category && (
-                <>
-                  <div className="flex justify-between items-center">
-                    <div
-                      className="text-[10px] truncate px-1 rounded max-w-1/2 shrink-1"
-                      style={{
-                        backgroundColor: tokenColor,
-                        color: "white",
-                      }}
-                    >
-                      {output.token_category.slice(2)}
-                    </div>
-                    {Number(output.fungible_token_amount) > 0 && (
-                      <div
-                        className="text-[10px] pl-2 rounded"
-                        style={{
-                          color: tokenColor,
-                        }}
-                      >
-                        {Number(output.fungible_token_amount).toLocaleString()}
-                      </div>
-                    )}
-                  </div>
-                  {output.nonfungible_token_capability && (
-                    <div className="flex justify-between items-center mt-1">
-                      <div
-                        className="text-[10px] truncate px-1 rounded max-w-2/3 shrink-0"
-                        style={{
-                          backgroundColor: tokenColor,
-                          color: "white",
-                        }}
-                      >
-                        {
-                          {
-                            minting: "minting nft",
-                            mutable: "mutable nft",
-                            none: "immutable nft",
-                            missing: "no nft",
-                          }[output.nonfungible_token_capability ?? "missing"]
-                        }
-                      </div>
-                      <div className="flex items-center">
-                        {(output.nonfungible_token_commitment?.length ?? 0) >
-                          2 && (
-                          <div
-                            className="text-[6px] truncate px-0.25 rounded max-w-2/3 shrink-0 text-"
-                            style={{
-                              borderWidth: 1,
-                              borderColor: tokenColor,
-                              color: tokenColor,
-                            }}
-                          >
-                            {((output.nonfungible_token_commitment ?? "\\x")
-                              .length -
-                              2) /
-                              2}
+                              if (field.startsWith("ipfs://")) {
+                                return (
+                                  <a
+                                    href={`https://ipfs.io/ipfs/${field.slice(
+                                      7
+                                    )}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    {field}
+                                  </a>
+                                );
+                              }
+
+                              if (/^[a-zA-Z0-9]+\..+\/.+$/.test(field)) {
+                                return (
+                                  <a
+                                    href={`https://${field}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500"
+                                    onClick={(e) => e.stopPropagation()}
+                                  >
+                                    {field}
+                                  </a>
+                                );
+                              }
+
+                              return <div>{field}</div>;
+                            })
+                        ) : (
+                          <div className="flex items-center gap-0.5 truncate">
+                            <div className="text-[6px] px-0.25 rounded max-w-2/3 shrink-0 border border-gray-500 ">
+                              {65}
+                            </div>
+                            <div className="truncate">
+                              {output.locking_bytecode.replace("\\x", "0x")}
+                            </div>
                           </div>
                         )}
-                        <div
-                          className="text-[10px] pl-0.5 rounded truncate"
-                          style={{
-                            color: tokenColor,
-                          }}
-                        >
-                          {typeof output.nonfungible_token_commitment ===
-                            "string" &&
-                          output.nonfungible_token_commitment.length > 2
-                            ? truncateMiddle(
-                                output.nonfungible_token_commitment.replace(
-                                  "\\x",
-                                  "0x"
-                                ),
-                                5
-                              )
-                            : ""}
-                        </div>
                       </div>
-                    </div>
-                  )}
-                </>
-              )}
+                    ) : (
+                      address.replace("bitcoincash:", "")
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
-          </TooltipTrigger>
+
+            <TokenData output={output} />
+          </div>
+
           <TooltipContent side="right" className="max-w-xs">
             <div>
               <div className="font-bold">Output #{output.output_index}</div>

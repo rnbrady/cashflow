@@ -119,3 +119,5 @@
     @apply bg-background text-foreground;
   }
 }
+
+@custom-variant transparency (&:where([data-theme=transparency], [data-theme=transparency] *));
