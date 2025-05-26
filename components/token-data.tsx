@@ -1,4 +1,4 @@
-import { cn, hashToColor, truncateMiddle } from "@/lib/utils";
+import { cn, hashToColor } from "@/lib/utils";
 import { Input, Output } from "@/lib/types";
 
 export function TokenData({
@@ -6,7 +6,7 @@ export function TokenData({
   output = input?.outpoint,
 }: {
   input?: Partial<Input>;
-  output?: Partial<Output>;
+  output?: Partial<Output> | null;
 }) {
   if (!output || !output.token_category) return null;
 

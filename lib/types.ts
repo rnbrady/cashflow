@@ -37,7 +37,7 @@ export interface Input {
     hash: string;
   };
   input_index: string;
-  outpoint?: Output;
+  outpoint?: Output | null;
   outpoint_transaction_hash: string;
   outpoint_index: string;
   value_satoshis: string | null;

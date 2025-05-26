@@ -13,7 +13,6 @@ import {
   hashToColor,
   getScriptType,
   tryDecodeCashAddress,
-  truncateMiddle,
   decodeOpReturnContents,
 } from "@/lib/utils";
 import { OutputNodeType } from "@/lib/types";
@@ -32,10 +31,6 @@ function OutputNode({
   const scriptType = getScriptType(output.locking_bytecode_pattern);
 
   const address = tryDecodeCashAddress(output.locking_bytecode);
-
-  const tokenColor = output.token_category
-    ? hashToColor(output.token_category)
-    : "bg-gray-100 text-gray-800";
 
   const toggleDecodeOpReturns = () => {
     setDecodeOpReturn((decodeOpReturn) => !decodeOpReturn);
@@ -88,6 +83,7 @@ function OutputNode({
                                     rel="noopener noreferrer"
                                     className="text-blue-500"
                                     onClick={(e) => e.stopPropagation()}
+                                    key={field}
                                   >
                                     {field}
                                   </a>
@@ -104,6 +100,7 @@ function OutputNode({
                                     rel="noopener noreferrer"
                                     className="text-blue-500"
                                     onClick={(e) => e.stopPropagation()}
+                                    key={field}
                                   >
                                     {field}
                                   </a>
@@ -118,13 +115,14 @@ function OutputNode({
                                     rel="noopener noreferrer"
                                     className="text-blue-500"
                                     onClick={(e) => e.stopPropagation()}
+                                    key={field}
                                   >
                                     {field}
                                   </a>
                                 );
                               }
 
-                              return <div>{field}</div>;
+                              return <div key={field}>{field}</div>;
                             })
                         ) : (
                           <div className="flex items-center gap-0.5 truncate">

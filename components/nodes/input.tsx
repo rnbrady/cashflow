@@ -11,7 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { hashToColor, parseScript, tryDecodeCashAddress } from "@/lib/utils";
+import { hashToColor, tryDecodeCashAddress } from "@/lib/utils";
 import { InputNodeType } from "@/lib/types";
 import { TokenData } from "../token-data";
 import { ScriptTypeBadge } from "../script-type-badge";
