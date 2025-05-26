@@ -171,6 +171,7 @@ export async function fetchAndDraw({
             hash: output.spent_by![0].transaction.hash,
           },
           input_index: output.spent_by![0].input_index,
+          value_satoshis: output.value_satoshis,
         },
         placeholder: true,
       },
