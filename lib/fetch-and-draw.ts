@@ -94,13 +94,17 @@ export async function fetchAndDraw({
         output: {
           transaction_hash: input.outpoint_transaction_hash,
           output_index: input.outpoint_index,
+          value_satoshis: input.value_satoshis,
+          unlocking_bytecode: input.unlocking_bytecode,
+          unlocking_bytecode_pattern: input.unlocking_bytecode_pattern,
+          redeem_bytecode_pattern: input.redeem_bytecode_pattern,
         },
         placeholder: true,
       },
       parentId: input.outpoint_transaction_hash,
       extent: "parent" as const,
       position: {
-        x: 270,
+        x: 220,
         y: 45 + Number(input.outpoint_index) * defaultOutputHeight,
       },
       style: { width: 180, padding: "0px", border: "none" },
@@ -131,7 +135,7 @@ export async function fetchAndDraw({
     parentId: output.transaction_hash,
     extent: "parent" as const,
     position: {
-      x: 270,
+      x: 220,
       y: 45 + Number(output.output_index) * defaultOutputHeight,
     },
     style: { width: 180, padding: "0px", border: "none" },

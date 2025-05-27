@@ -17,6 +17,10 @@ export interface SpendingTransaction {
 export interface SpentBy {
   input_index: string;
   transaction: SpendingTransaction;
+  value_satoshis: string | null;
+  unlocking_bytecode: string | null;
+  unlocking_bytecode_pattern: string | null;
+  redeem_bytecode_pattern: string | null;
 }
 
 export interface Output {

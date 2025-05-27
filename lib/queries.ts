@@ -52,6 +52,10 @@ export const GET_TRANSACTION_DETAILS = graphql(`
         token_category
         spent_by {
           input_index
+          unlocking_bytecode
+          unlocking_bytecode_pattern
+          redeem_bytecode_pattern
+          value_satoshis
           transaction {
             hash
           }

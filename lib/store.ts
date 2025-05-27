@@ -37,6 +37,7 @@ export interface ChartState {
   }) => void;
   clear: () => void;
   addAnnotation: (transactionHash: string, annotation?: string) => void;
+  deleteTransaction: (œtransactionHash: string) => void;
 }
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
@@ -125,6 +126,54 @@ export const useStore = create<ChartState>((set, get) => ({
       ],
     });
   },
+  deleteTransaction: (transactionHash: string) => {
+    const currentNodes = get().nodes;
+    const currentEdges = get().edges;
+
+    // Find the transaction node to get its position
+    const transactionNode = currentNodes.find(
+      (node) => node.id === transactionHash
+    );
+    const parentPosition = transactionNode?.position || { x: 0, y: 0 };
+
+    // Orphan child input/output nodes by removing their parentId and converting positions to absolute
+    const updatedNodes = currentNodes
+      .map((node) => {
+        if (
+          node.parentId === transactionHash &&
+          (node.type === "input" || node.type === "output")
+        ) {
+          return {
+            ...node,
+            extent: undefined,
+            dragHandle: undefined,
+            position: {
+              x: node.position.x + parentPosition.x,
+              y: node.position.y + parentPosition.y,
+            },
+          };
+        }
+        return node;
+      })
+      // Remove the transaction node and any annotation nodes with this parentId
+      .filter((node) => {
+        if (node.id === transactionHash) return false; // Remove transaction node
+        if (node.parentId === transactionHash && node.type === "annotation")
+          return false; // Remove annotation nodes
+        return true;
+      });
+
+    // Remove edges connected to the transaction node
+    const updatedEdges = currentEdges.filter(
+      (edge) =>
+        edge.source !== transactionHash && edge.target !== transactionHash
+    );
+
+    set({
+      nodes: updatedNodes,
+      edges: updatedEdges,
+    });
+  },
 }));
 
 function upsertEdges({
@@ -171,11 +220,13 @@ function upsertNodes({
       (node) => node.id === newNode.id
     );
 
+    // Node not seen before, simply add it
     if (existingNodeIndex === -1) {
       updatedNodes.push(newNode);
       return updatedNodes;
     }
 
+    // placeholder transaction, existing transaction is also a placeholder
     if (
       newNode.data.placeholder &&
       updatedNodes[existingNodeIndex].data.placeholder &&
@@ -209,12 +260,22 @@ function upsertNodes({
       return updatedNodes;
     }
 
+    // new node is a placeholder, existing node is not a placeholder
     if (
       newNode.data.placeholder &&
       !updatedNodes[existingNodeIndex].data.placeholder
-    )
+    ) {
+      if (newNode.parentId) {
+        updatedNodes[existingNodeIndex] = {
+          ...updatedNodes[existingNodeIndex],
+          parentId: newNode.parentId,
+          extent: "parent" as const,
+        };
+      }
       return updatedNodes;
+    }
 
+    // new node is not a placeholder but a full node
     if (!newNode.data.placeholder) {
       updatedNodes[existingNodeIndex] = {
         ...updatedNodes[existingNodeIndex],
@@ -249,7 +310,7 @@ function layoutNodes({
   );
 
   nodes
-    .filter((node) => node.type === "transaction")
+    .filter((node) => !node.parentId)
     .forEach((node) => {
       g.setNode(node.id, {
         ...node,

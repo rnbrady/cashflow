@@ -3,15 +3,16 @@
 import React, { memo, useCallback } from "react";
 import { NodeProps } from "@xyflow/react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { getContrastColor, hashToColor } from "@/lib/utils";
+import { cn, getContrastColor, hashToColor } from "@/lib/utils";
 import { TransactionNodeType } from "@/lib/types";
-import { Copy, PencilLine } from "lucide-react";
+import { CaptionsOff, Copy, PencilLine, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { useShallow } from "zustand/react/shallow";
 import { ChartState, useStore } from "@/lib/store";
 
 function TransactionNode({
   data: { transaction, placeholder },
+  selected,
 }: NodeProps<TransactionNodeType>) {
   const color = hashToColor(transaction.hash);
   const textColor = getContrastColor(color);
@@ -36,11 +37,12 @@ function TransactionNode({
   const selector = useCallback(
     (state: ChartState) => ({
       addAnnotation: state.addAnnotation,
+      deleteTransaction: state.deleteTransaction,
     }),
     []
   );
 
-  const { addAnnotation } = useStore(useShallow(selector));
+  const { addAnnotation, deleteTransaction } = useStore(useShallow(selector));
 
   const annotate = () => {
     addAnnotation(transaction.hash || "", "");
@@ -51,7 +53,10 @@ function TransactionNode({
       <div className={`transaction-node`} style={{ width: 400 }}>
         {/* Transaction container */}
         <div
-          className={`relative rounded-lg border border-gray-300 bg-white transparency:bg-white/90 overflow-hidden`}
+          className={cn(
+            `relative rounded-lg border border-gray-300 bg-white transparency:bg-white/90 overflow-hidden`,
+            selected && `outline-2 outline-offset-1 outline-gray-300`
+          )}
         >
           {/* Transaction header with hash-based color */}
           <div
@@ -61,7 +66,7 @@ function TransactionNode({
               color: placeholder ? "white" : textColor,
             }}
           >
-            <div className="text-sm font-medium truncate group-hover:mr-12">
+            <div className="text-sm font-medium truncate group-hover:mr-28">
               {cleanHash}
             </div>
             <div className="absolute right-2 top-2 flex gap-1">
@@ -88,6 +93,30 @@ function TransactionNode({
                 style={{ color: textColor }}
               >
                 <PencilLine className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteTransaction(transaction.hash || "");
+                }}
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 hover:bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ color: textColor }}
+              >
+                <CaptionsOff className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteTransaction(transaction.hash || "");
+                }}
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 hover:bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ color: textColor }}
+              >
+                <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           </div>
