@@ -50,7 +50,6 @@ export function ChartPage() {
       layout: state.layout,
       addNodesAndEdges: state.addNodesAndEdges,
       clear: state.clear,
-      addAnnotation: state.addAnnotation,
     }),
     []
   );
@@ -74,7 +73,6 @@ export function ChartPage() {
     layout,
     addNodesAndEdges,
     clear,
-    addAnnotation,
   } = useStore(useShallow(selector));
 
   const styledEdges = useMemo(
