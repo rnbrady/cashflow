@@ -1,12 +1,14 @@
 "use client";
 
-import React, { memo } from "react";
+import React, { memo, useCallback } from "react";
 import { NodeProps } from "@xyflow/react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { getContrastColor, hashToColor } from "@/lib/utils";
 import { TransactionNodeType } from "@/lib/types";
-import { Copy } from "lucide-react";
+import { Copy, PencilLine } from "lucide-react";
 import { Button } from "../ui/button";
+import { useShallow } from "zustand/react/shallow";
+import { ChartState, useStore } from "@/lib/store";
 
 function TransactionNode({
   data: { transaction, placeholder },
@@ -31,6 +33,19 @@ function TransactionNode({
 
   const cleanHash = transaction.hash?.replace(/\\x/g, "") || "";
 
+  const selector = useCallback(
+    (state: ChartState) => ({
+      addAnnotation: state.addAnnotation,
+    }),
+    []
+  );
+
+  const { addAnnotation } = useStore(useShallow(selector));
+
+  const annotate = () => {
+    addAnnotation(transaction.hash || "", "");
+  };
+
   return (
     <TooltipProvider>
       <div className={`transaction-node`} style={{ width: 400 }}>
@@ -46,21 +61,35 @@ function TransactionNode({
               color: placeholder ? "white" : textColor,
             }}
           >
-            <div className="text-sm font-medium truncate group-hover:mr-6">
+            <div className="text-sm font-medium truncate group-hover:mr-12">
               {cleanHash}
             </div>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                navigator.clipboard.writeText(cleanHash);
-              }}
-              variant="ghost"
-              size="icon"
-              className="absolute right-2 top-2 h-6 w-6 hover:bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"
-              style={{ color: textColor }}
-            >
-              <Copy className="h-4 w-4" />
-            </Button>
+            <div className="absolute right-2 top-2 flex gap-1">
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigator.clipboard.writeText(cleanHash);
+                }}
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 hover:bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ color: textColor }}
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  annotate();
+                }}
+                variant="ghost"
+                size="icon"
+                className="h-6 w-6 hover:bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ color: textColor }}
+              >
+                <PencilLine className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Transaction content - will contain child nodes */}

@@ -16,7 +16,6 @@ import {
   decodeOpReturnContents,
 } from "@/lib/utils";
 import { OutputNodeType } from "@/lib/types";
-import "./overrides.css";
 import { TokenData } from "../token-data";
 import { ScriptTypeBadge } from "../script-type-badge";
 

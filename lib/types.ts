@@ -108,6 +108,13 @@ export type TransactionNodeType = Node<
   "transaction"
 >;
 
+export type AnnotationNodeType = Node<
+  {
+    annotation: string;
+  },
+  "annotation"
+>;
+
 export type SpentEdgeType = Edge<
   {
     output: Partial<Output> | null | undefined;

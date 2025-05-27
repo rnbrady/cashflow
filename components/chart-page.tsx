@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import TransactionNode from "@/components/nodes/transaction";
 import InputNode from "@/components/nodes/input";
 import OutputNode from "@/components/nodes/output";
+import AnnotationNode from "@/components/nodes/annotation";
 import { fetchAndDraw } from "@/lib/fetch-and-draw";
 import { cn, hashToColor } from "@/lib/utils";
 import { Output } from "@/lib/types";
@@ -49,6 +50,7 @@ export function ChartPage() {
       layout: state.layout,
       addNodesAndEdges: state.addNodesAndEdges,
       clear: state.clear,
+      addAnnotation: state.addAnnotation,
     }),
     []
   );
@@ -58,6 +60,7 @@ export function ChartPage() {
       transaction: TransactionNode,
       input: InputNode,
       output: OutputNode,
+      annotation: AnnotationNode,
     }),
     []
   );
@@ -71,6 +74,7 @@ export function ChartPage() {
     layout,
     addNodesAndEdges,
     clear,
+    addAnnotation,
   } = useStore(useShallow(selector));
 
   const styledEdges = useMemo(

@@ -36,6 +36,7 @@ export interface ChartState {
     layout?: boolean;
   }) => void;
   clear: () => void;
+  addAnnotation: (transactionHash: string, annotation?: string) => void;
 }
 
 // this is our useStore hook that we can use in our components to get parts of the store and call actions
@@ -107,6 +108,22 @@ export const useStore = create<ChartState>((set, get) => ({
   },
   clear: () => {
     set({ nodes: [], edges: [] });
+  },
+  addAnnotation: (transactionHash: string, annotation?: string) => {
+    set({
+      nodes: [
+        ...get().nodes,
+        {
+          id: `annotation-${transactionHash}`,
+          type: "annotation",
+          data: { annotation: annotation || "" },
+          position: { x: 0, y: -40 },
+          style: { width: 180 },
+          parentId: transactionHash,
+          selected: true,
+        },
+      ],
+    });
   },
 }));
 
