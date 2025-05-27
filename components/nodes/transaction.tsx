@@ -1,7 +1,7 @@
 "use client";
 
 import React, { memo, useCallback } from "react";
-import { NodeProps } from "@xyflow/react";
+import { NodeProps, useReactFlow } from "@xyflow/react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn, getContrastColor, hashToColor } from "@/lib/utils";
 import { TransactionNodeType } from "@/lib/types";
@@ -47,6 +47,8 @@ function TransactionNode({
   const annotate = () => {
     addAnnotation(transaction.hash || "", "");
   };
+
+  const { deleteElements } = useReactFlow();
 
   return (
     <TooltipProvider>
@@ -109,7 +111,7 @@ function TransactionNode({
               <Button
                 onClick={(e) => {
                   e.stopPropagation();
-                  deleteTransaction(transaction.hash || "");
+                  deleteElements({ nodes: [{ id: transaction.hash || "" }] });
                 }}
                 variant="ghost"
                 size="icon"
