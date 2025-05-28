@@ -223,7 +223,7 @@ function upsertNodes({
     // Node not seen before, simply add it
     if (existingNodeIndex === -1) {
       updatedNodes.push(newNode);
-      return updatedNodes;
+      return;
     }
 
     // placeholder transaction, existing transaction is also a placeholder
@@ -257,7 +257,7 @@ function upsertNodes({
       };
 
       updatedNodes[existingNodeIndex] = updatedNode;
-      return updatedNodes;
+      return;
     }
 
     // new node is a placeholder, existing node is not a placeholder
@@ -272,7 +272,7 @@ function upsertNodes({
           extent: "parent" as const,
         };
       }
-      return updatedNodes;
+      return;
     }
 
     // new node is not a placeholder but a full node
@@ -284,14 +284,17 @@ function upsertNodes({
           ...newNode.data,
           placeholder: false,
         },
-        position: updatedNodes[existingNodeIndex].position,
+        position:
+          newNode.type === "transaction"
+            ? updatedNodes[existingNodeIndex].position
+            : newNode.position,
       };
     }
-
-    return updatedNodes;
   });
 
-  return updatedNodes;
+  return updatedNodes.sort((a, b) => {
+    return a.id < b.id ? -1 : 1;
+  });
 }
 
 function layoutNodes({
@@ -305,9 +308,17 @@ function layoutNodes({
 
   g.setGraph({ rankdir: "LR", ranksep: 150, ranker: "longest-path" });
 
-  edges.forEach((edge) =>
-    g.setEdge(edge.source.split("-")[0], edge.target.split("-")[0])
-  );
+  edges.forEach((edge) => {
+    const source = nodes.find((node) => node.id === edge.source);
+    const target = nodes.find((node) => node.id === edge.target);
+
+    if (!source || !target) return;
+
+    g.setEdge(
+      source.parentId ? source.id.split("-")[0] : source.id,
+      target.parentId ? target.id.split("-")[0] : target.id
+    );
+  });
 
   nodes
     .filter((node) => !node.parentId)

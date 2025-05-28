@@ -119,6 +119,7 @@ export const NodeInspector = () => {
             <NodeInfo
               key={node.id}
               id={node.id}
+              parentId={node.parentId || ""}
               selected={!!node.selected}
               type={node.type || "default"}
               position={node.position}
@@ -137,6 +138,7 @@ export const NodeInspector = () => {
 type NodeInfoProps = {
   id: string;
   type: string;
+  parentId: string;
   selected: boolean;
   position: XYPosition;
   absPosition: XYPosition;
@@ -148,6 +150,7 @@ type NodeInfoProps = {
 const NodeInfo = ({
   id,
   type,
+  parentId,
   selected,
   position,
   absPosition,
@@ -176,11 +179,12 @@ const NodeInfo = ({
       className="text-xs"
     >
       <div>id: {id}</div>
-      <div>type: {type}</div>
-      <div>selected: {selectionStatus}</div>
+      <div>parentId: {parentId}</div>
       <div>position: {formattedPosition}</div>
+      {/* <div>type: {type}</div>
+      <div>selected: {selectionStatus}</div>
       <div>dimensions: {formattedDimensions}</div>
-      <div>data: {JSON.stringify(data, null, 2)}</div>
+      <div>data: {JSON.stringify(data, null, 2)}</div> */}
     </div>
   );
 };

@@ -101,10 +101,10 @@ export async function fetchAndDraw({
         },
         placeholder: true,
       },
-      parentId: input.outpoint_transaction_hash,
-      extent: "parent" as const,
+      // parentId: input.outpoint_transaction_hash,
+      // extent: "parent" as const,
       position: {
-        x: 220,
+        x: -500,
         y: 45 + Number(input.outpoint_index) * defaultOutputHeight,
       },
       style: { width: 180, padding: "0px", border: "none" },
@@ -179,10 +179,10 @@ export async function fetchAndDraw({
         },
         placeholder: true,
       },
-      parentId: output.spent_by![0].transaction.hash,
-      extent: "parent" as const,
+      // parentId: output.spent_by![0].transaction.hash,
+      // extent: "parent" as const,
       position: {
-        x: 0,
+        x: 1000,
         y: 45 + Number(output.spent_by![0].input_index) * defaultInputHeight,
       },
       style: { width: 180, padding: "0px", border: "none" },
@@ -206,12 +206,12 @@ export async function fetchAndDraw({
   const nodes = [
     mainTransaction,
     ...inputs,
-    ...upstreamTransactions,
-    ...upstreamOutputs,
     ...outputs,
-    ...downstreamTransactions,
+    ...upstreamOutputs,
     ...downstreamInputs,
+    // ...upstreamTransactions,
+    // ...downstreamTransactions,
   ];
   const edges = [...upstreamEdges, ...downstreamEdges];
-  addNodesAndEdges({ newNodes: nodes, newEdges: edges, layout: true });
+  addNodesAndEdges({ newNodes: nodes, newEdges: edges, layout: false });
 }

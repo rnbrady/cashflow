@@ -25,7 +25,7 @@ import OutputNode from "@/components/nodes/output";
 import AnnotationNode from "@/components/nodes/annotation";
 import { fetchAndDraw } from "@/lib/fetch-and-draw";
 import { cn, hashToColor } from "@/lib/utils";
-import { Output } from "@/lib/types";
+import { InputNodeType, OutputNodeType, Output } from "@/lib/types";
 import { DevTools } from "./devtools";
 import { useHotkeys } from "react-hotkeys-hook";
 
@@ -44,6 +44,19 @@ export function ChartPage() {
   const reactFlow = useReactFlow();
 
   useHotkeys("d", () => setShowDevTools((current) => !current));
+
+  useHotkeys("x", () => {
+    // expand (fetch and draw) all selected nodes
+    const selectedNodes = reactFlow.getNodes().filter((node) => node.selected);
+    if (selectedNodes.length === 0) return;
+
+    selectedNodes.forEach((node) => {
+      fetchAndDraw({
+        transactionHash: node.id.split("-")[0],
+        addNodesAndEdges,
+      });
+    });
+  });
 
   const selector = useCallback(
     (state: ChartState) => ({
@@ -148,6 +161,34 @@ export function ChartPage() {
             "Failed to fetch transaction. Please check your input and try again."
           );
           console.error(err);
+        });
+      }
+
+      if (node.type === "input") {
+        const inputNode: InputNodeType = node as InputNodeType;
+        const transactionHash = inputNode.data.input.transaction?.hash;
+        if (!transactionHash) return;
+        fetchAndDraw({
+          transactionHash,
+          addNodesAndEdges,
+        }).catch((err) => {
+          setError(
+            "Failed to fetch transaction. Please check your input and try again."
+          );
+        });
+      }
+
+      if (node.type === "output") {
+        const outputNode: OutputNodeType = node as OutputNodeType;
+        const transactionHash = outputNode.data.output.transaction_hash;
+        if (!transactionHash) return;
+        fetchAndDraw({
+          transactionHash,
+          addNodesAndEdges,
+        }).catch((err) => {
+          setError(
+            "Failed to fetch transaction. Please check your input and try again."
+          );
         });
       }
     },

@@ -30,8 +30,6 @@ function TransactionNode({
 
   const contentHeight = Math.max(numInputs, numOutputs) * 93 + 8;
 
-  console.log("contentHeight", contentHeight);
-
   const cleanHash = transaction.hash?.replace(/\\x/g, "") || "";
 
   const selector = useCallback(
