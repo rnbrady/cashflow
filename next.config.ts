@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
     return config;
   },
   experimental: {
+    reactCompiler: true,
     turbo: {
       resolveAlias: {
         "web-worker": "./lib/empty-module.ts",
