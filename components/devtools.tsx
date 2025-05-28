@@ -149,14 +149,11 @@ type NodeInfoProps = {
 
 const NodeInfo = ({
   id,
-  type,
   parentId,
-  selected,
   position,
   absPosition,
   width,
   height,
-  data,
 }: NodeInfoProps) => {
   if (!width || !height) return null;
 
@@ -166,8 +163,6 @@ const NodeInfo = ({
   const formattedPosition = `${position.x.toFixed(1)}, ${position.y.toFixed(
     1
   )}`;
-  const formattedDimensions = `${width} × ${height}`;
-  const selectionStatus = selected ? "Selected" : "Not Selected";
 
   return (
     <div

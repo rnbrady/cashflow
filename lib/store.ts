@@ -304,6 +304,8 @@ function layoutNodes({
   nodes: Node[];
   edges: Edge<{ output?: Output }>[];
 }) {
+  console.log("Using Dagre to layout nodes");
+
   const g = new Dagre.graphlib.Graph().setDefaultEdgeLabel(() => ({}));
 
   g.setGraph({ rankdir: "LR", ranksep: 150, ranker: "longest-path" });

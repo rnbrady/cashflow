@@ -203,6 +203,13 @@ export async function fetchAndDraw({
       },
     }));
 
+  console.log("Omitting", upstreamTransactions.length, "upstreamTransactions");
+  console.log(
+    "Omitting",
+    downstreamTransactions.length,
+    "downstreamTransactions"
+  );
+
   const nodes = [
     mainTransaction,
     ...inputs,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { Search, Loader2 as Loader } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 import {
@@ -10,6 +10,7 @@ import {
   BackgroundVariant,
   MarkerType,
   useReactFlow,
+  useNodesInitialized,
   Edge,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -28,6 +29,7 @@ import { cn, hashToColor } from "@/lib/utils";
 import { InputNodeType, OutputNodeType, Output } from "@/lib/types";
 import { DevTools } from "./devtools";
 import { useHotkeys } from "react-hotkeys-hook";
+import { getLayoutedNodes } from "@/lib/use-layout-nodes";
 
 const raleway = Raleway({
   weight: ["700"],
@@ -42,6 +44,23 @@ export function ChartPage() {
   const [showDevTools, setShowDevTools] = useState(false);
   const [error, setError] = useState("");
   const reactFlow = useReactFlow();
+
+  const nodesInitialized = useNodesInitialized();
+
+  const layoutNodes = useCallback(async () => {
+    const layoutedNodes = await getLayoutedNodes(
+      reactFlow.getNodes(),
+      reactFlow.getEdges()
+    );
+
+    reactFlow.setNodes(layoutedNodes);
+  }, [reactFlow]);
+
+  useEffect(() => {
+    if (nodesInitialized) {
+      layoutNodes();
+    }
+  }, [nodesInitialized, layoutNodes]);
 
   useHotkeys("d", () => setShowDevTools((current) => !current));
 
@@ -175,6 +194,7 @@ export function ChartPage() {
           setError(
             "Failed to fetch transaction. Please check your input and try again."
           );
+          console.error(err);
         });
       }
 
@@ -189,6 +209,7 @@ export function ChartPage() {
           setError(
             "Failed to fetch transaction. Please check your input and try again."
           );
+          console.error(err);
         });
       }
     },
@@ -236,12 +257,21 @@ export function ChartPage() {
               </Button>
               <Button
                 type="button"
+                onClick={layoutNodes}
+                variant="outline"
+                disabled={loading}
+                className="flex-1 sm:flex-initial"
+              >
+                Elk
+              </Button>
+              <Button
+                type="button"
                 onClick={layout}
                 variant="outline"
                 disabled={loading}
                 className="flex-1 sm:flex-initial"
               >
-                Arrange
+                Dagre
               </Button>
               <Button
                 type="button"
