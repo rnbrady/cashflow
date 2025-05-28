@@ -26,6 +26,8 @@ import AnnotationNode from "@/components/nodes/annotation";
 import { fetchAndDraw } from "@/lib/fetch-and-draw";
 import { cn, hashToColor } from "@/lib/utils";
 import { Output } from "@/lib/types";
+import { DevTools } from "./devtools";
+import { useHotkeys } from "react-hotkeys-hook";
 
 const raleway = Raleway({
   weight: ["700"],
@@ -37,8 +39,11 @@ export function ChartPage() {
     "5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691"
   );
   const [loading, setLoading] = useState(false);
+  const [showDevTools, setShowDevTools] = useState(false);
   const [error, setError] = useState("");
   const reactFlow = useReactFlow();
+
+  useHotkeys("d", () => setShowDevTools((current) => !current));
 
   const selector = useCallback(
     (state: ChartState) => ({
@@ -247,6 +252,7 @@ export function ChartPage() {
               size={1}
               color="lightgray"
             />
+            {showDevTools && <DevTools position="top-left" />}
           </ReactFlow>
         </div>
       </div>
