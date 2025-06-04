@@ -85,6 +85,7 @@ export function ChartPage() {
       onConnect: state.onConnect,
       layout: state.layout,
       addNodesAndEdges: state.addNodesAndEdges,
+      addAnnotation: state.addAnnotation,
       clear: state.clear,
     }),
     []
@@ -108,6 +109,7 @@ export function ChartPage() {
     onConnect,
     layout,
     addNodesAndEdges,
+    addAnnotation,
     clear,
   } = useStore(useShallow(selector));
 
@@ -143,6 +145,7 @@ export function ChartPage() {
   const searchParams = useSearchParams();
 
   const transactionHashes = searchParams.getAll("tx");
+  const transactionNotes = searchParams.getAll("note");
 
   useEffect(() => {
     console.log("searchParams effect running");
@@ -151,9 +154,14 @@ export function ChartPage() {
       fetchAndDraw({
         transactionHashes,
         addNodesAndEdges,
+      }).then(() => {
+        transactionNotes.forEach((note, index) => {
+          addAnnotation("\\x" + transactionHashes[index], note);
+        });
+        setTimeout(() => reactFlow.fitView(), 100);
       });
     }
-  }, [transactionHashes]);
+  }, [transactionHashes, addNodesAndEdges, addAnnotation, transactionNotes]);
 
   const handleSearch = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {

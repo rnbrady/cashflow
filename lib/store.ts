@@ -118,10 +118,10 @@ export const useStore = create<ChartState>((set, get) => ({
           id: `annotation-${transactionHash}`,
           type: "annotation",
           data: { annotation: annotation || "" },
-          position: { x: 0, y: -40 },
+          position: { x: 0, y: -30 },
           style: { width: 180 },
           parentId: transactionHash,
-          selected: true,
+          selected: !annotation,
         },
       ],
     });
