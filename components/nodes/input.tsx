@@ -75,7 +75,8 @@ function InputNode({
                   {input.outpoint?.locking_bytecode && (
                     <div className="text-[10px] truncate ml-1 text-gray-500 hover:overflow-visible hover:bg-gray-100 hover:fixed hover:z-[2147483647]">
                       {tryDecodeCashAddress(
-                        input.outpoint?.locking_bytecode
+                        input.outpoint?.locking_bytecode,
+                        !!input.outpoint?.token_category
                       )?.replace("bitcoincash:", "")}
                     </div>
                   )}

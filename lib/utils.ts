@@ -15,7 +15,8 @@ export function formatTimestamp(timestamp: string): string {
 }
 
 export function tryDecodeCashAddress(
-  lockingBytecode: string | null | undefined
+  lockingBytecode: string | null | undefined,
+  tokenSupport: boolean = false
 ): string {
   if (!lockingBytecode) return "Unknown";
 
@@ -28,7 +29,7 @@ export function tryDecodeCashAddress(
     const result = lockingBytecodeToCashAddress({
       prefix: "bitcoincash",
       bytecode,
-      tokenSupport: true,
+      tokenSupport,
     });
 
     if (typeof result === "string") {

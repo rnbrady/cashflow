@@ -211,7 +211,10 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                       <div>
                         <p className="text-sm text-gray-600">Address</p>
                         <p className="font-mono text-sm break-all">
-                          {tryDecodeCashAddress(output.locking_bytecode)}
+                          {tryDecodeCashAddress(
+                            output.locking_bytecode,
+                            !!output.token_category
+                          )}
                         </p>
                       </div>
                       <div>

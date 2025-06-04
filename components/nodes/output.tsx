@@ -29,7 +29,10 @@ function OutputNode({
 
   const scriptType = getScriptType(output.locking_bytecode_pattern);
 
-  const address = tryDecodeCashAddress(output.locking_bytecode);
+  const address = tryDecodeCashAddress(
+    output.locking_bytecode,
+    !!output.token_category
+  );
 
   const toggleDecodeOpReturns = () => {
     setDecodeOpReturn((decodeOpReturn) => !decodeOpReturn);

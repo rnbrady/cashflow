@@ -30,6 +30,7 @@ import { InputNodeType, OutputNodeType, Output } from "@/lib/types";
 import { DevTools } from "./devtools";
 import { useHotkeys } from "react-hotkeys-hook";
 import { getLayoutedNodes } from "@/lib/use-layout-nodes";
+import { useSearchParams } from "next/navigation";
 
 const raleway = Raleway({
   weight: ["700"],
@@ -37,9 +38,7 @@ const raleway = Raleway({
 });
 
 export function ChartPage() {
-  const [searchQuery, setSearchQuery] = useState(
-    "5a4f6b25243c1a2dabb2434e3d9e574f65c31764ce0e7eb4127a46fa74657691"
-  );
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [showDevTools, setShowDevTools] = useState(false);
   const [error, setError] = useState("");
@@ -71,7 +70,7 @@ export function ChartPage() {
 
     selectedNodes.forEach((node) => {
       fetchAndDraw({
-        transactionHash: node.id.split("-")[0],
+        transactionHashes: [node.id.split("-")[0]],
         addNodesAndEdges,
       });
     });
@@ -141,6 +140,21 @@ export function ChartPage() {
     [edges]
   );
 
+  const searchParams = useSearchParams();
+
+  const transactionHashes = searchParams.getAll("tx");
+
+  useEffect(() => {
+    console.log("searchParams effect running");
+
+    if (transactionHashes.length > 0) {
+      fetchAndDraw({
+        transactionHashes,
+        addNodesAndEdges,
+      });
+    }
+  }, [transactionHashes]);
+
   const handleSearch = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
@@ -150,7 +164,7 @@ export function ChartPage() {
       setError("");
 
       fetchAndDraw({
-        transactionHash: searchQuery,
+        transactionHashes: [searchQuery],
         addNodesAndEdges,
       })
         .catch((err) => {
@@ -173,7 +187,7 @@ export function ChartPage() {
 
       if (node.type === "transaction" && node.id) {
         fetchAndDraw({
-          transactionHash: node.id,
+          transactionHashes: [node.id],
           addNodesAndEdges,
         }).catch((err) => {
           setError(
@@ -188,7 +202,7 @@ export function ChartPage() {
         const transactionHash = inputNode.data.input.transaction?.hash;
         if (!transactionHash) return;
         fetchAndDraw({
-          transactionHash,
+          transactionHashes: [transactionHash],
           addNodesAndEdges,
         }).catch((err) => {
           setError(
@@ -203,7 +217,7 @@ export function ChartPage() {
         const transactionHash = outputNode.data.output.transaction_hash;
         if (!transactionHash) return;
         fetchAndDraw({
-          transactionHash,
+          transactionHashes: [transactionHash],
           addNodesAndEdges,
         }).catch((err) => {
           setError(
