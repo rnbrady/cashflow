@@ -37,43 +37,43 @@ function InputNode({
           type="target"
           position={Position.Left}
           isConnectable={isConnectable}
-          className="w-3 h-3 bg-blue-500"
+          className="size-3 bg-blue-500"
           style={{ left: -4 }}
         />
 
         <Tooltip>
           <TooltipTrigger asChild>
             <div
-              className="p-2 rounded-md  bg-gray-100 transparency:bg-gray-200/50 border-l-4 shadow-sm text-xs"
+              className="rounded-md border-l-4 p-2 text-xs text-foreground shadow-sm transparency:bg-tx-input-background/50"
               style={{ borderLeftColor: borderColor }}
             >
               <div className="font-medium mb-1 flex justify-between items-center">
-                <span className="text-emerald-600 text-[10px]">
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400">
                   {Number(input.value_satoshis).toLocaleString()}
                 </span>
-                <span className="font-medium text-gray-500">
+                <span className="font-medium text-muted-foreground">
                   #{input.input_index}
                 </span>
               </div>
 
               {input.unlocking_bytecode_pattern && (
-                <div className="text-gray-500 flex justify-between mb-1 text-[10px] items-center">
-                  <LockOpen className="w-2.5 h-2.5 inline-block mr-0.5 shrink-0" />{" "}
+                <div className="mb-1 flex items-center justify-between text-[10px] text-muted-foreground">
+                  <LockOpen className="mr-0.5 inline-block size-2.5 shrink-0" />{" "}
                   <ScriptTypeBadge output={input.outpoint} />
                   {input.unlocking_bytecode_pattern === "4121" && (
                     <div className="flex items-center">
-                      <div className="text-[6px] truncate px-0.25 rounded max-w-2/3 shrink-0 border border-gray-500 ">
+                      <div className="max-w-2/3 shrink-0 truncate rounded border px-0.25 text-[6px]">
                         {65}
                       </div>
-                      <PiSignatureBold className="w-2.5 h-2.5 inline-block ml-0.5 text-gray-500" />
-                      <div className="text-[6px] truncate px-0.25 rounded max-w-2/3 shrink-0 border border-gray-500 ml-1">
+                      <PiSignatureBold className="ml-0.5 inline-block size-2.5 text-muted-foreground" />
+                      <div className="ml-1 max-w-2/3 shrink-0 truncate rounded border px-0.25 text-[6px]">
                         {33}
                       </div>
-                      <PiKeyBold className="w-2.5 h-2.5 inline-block ml-0.5 text-gray-500" />
+                      <PiKeyBold className="ml-0.5 inline-block size-2.5 text-muted-foreground" />
                     </div>
                   )}
                   {input.outpoint?.locking_bytecode && (
-                    <div className="text-[10px] truncate ml-1 text-gray-500 hover:overflow-visible hover:bg-gray-100 hover:fixed hover:z-[2147483647]">
+                    <div className="ml-1 truncate text-[10px] text-muted-foreground hover:fixed hover:z-[2147483647] hover:overflow-visible hover:bg-muted">
                       {tryDecodeCashAddress(
                         input.outpoint?.locking_bytecode,
                         !!input.outpoint?.token_category
@@ -84,8 +84,8 @@ function InputNode({
               )}
 
               {isCoinbase && (
-                <div className="text-gray-600">
-                  <div className="bg-yellow-100 text-yellow-800 px-1 rounded text-[10px] inline-block mb-1">
+                <div className="text-muted-foreground">
+                  <div className="mb-1 inline-block rounded bg-yellow-500/15 px-1 text-[10px] text-yellow-700 dark:text-yellow-300">
                     Coinbase
                   </div>
                   <div className="text-[10px] truncate">

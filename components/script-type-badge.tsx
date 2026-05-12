@@ -10,12 +10,19 @@ export function ScriptTypeBadge({
 
   const scriptType = getScriptType(output?.locking_bytecode_pattern);
 
-  // Determine badge color based on script type
-  let badgeColor = "bg-gray-100 text-gray-800";
-  if (scriptType === "P2PKH") badgeColor = "bg-green-100 text-green-800";
-  if (scriptType === "P2SH") badgeColor = "bg-purple-100 text-purple-800";
-  if (scriptType === "P2SH32") badgeColor = "bg-fuchsia-100 text-fuchsia-800";
-  if (scriptType === "OP_RETURN") badgeColor = "bg-blue-100 text-blue-800";
+  let badgeColor = "bg-muted text-muted-foreground";
+  if (scriptType === "P2PKH") {
+    badgeColor = "bg-green-500/15 text-green-700 dark:text-green-300";
+  }
+  if (scriptType === "P2SH") {
+    badgeColor = "bg-purple-500/15 text-purple-700 dark:text-purple-300";
+  }
+  if (scriptType === "P2SH32") {
+    badgeColor = "bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300";
+  }
+  if (scriptType === "OP_RETURN") {
+    badgeColor = "bg-blue-500/15 text-blue-700 dark:text-blue-300";
+  }
 
   return <span className={`rounded ${badgeColor} px-1`}>{scriptType}</span>;
 }

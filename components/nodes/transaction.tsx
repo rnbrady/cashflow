@@ -54,16 +54,16 @@ function TransactionNode({
         {/* Transaction container */}
         <div
           className={cn(
-            `relative rounded-lg border border-gray-300 bg-white transparency:bg-white/90 overflow-hidden`,
-            selected && `outline-2 outline-offset-1 outline-gray-300`
+            "relative overflow-hidden rounded-lg border border-tx-border bg-card text-card-foreground shadow-sm transparency:bg-card/90",
+            selected && "outline-2 outline-offset-1 outline-tx-border"
           )}
         >
           {/* Transaction header with hash-based color */}
           <div
             className="px-3 py-2 border-b group"
             style={{
-              backgroundColor: placeholder ? "lightgray" : color,
-              color: placeholder ? "white" : textColor,
+              backgroundColor: placeholder ? "var(--muted)" : color,
+              color: placeholder ? "var(--muted-foreground)" : textColor,
             }}
           >
             <div className="text-sm font-medium truncate group-hover:mr-28">
@@ -127,7 +127,7 @@ function TransactionNode({
           </div>
 
           {/* Transaction footer with additional info */}
-          <div className="px-3 py-1 border-t border-gray-200 bg-gray-50 flex justify-between text-[10px] text-gray-500">
+          <div className="flex justify-between border-t border-tx-footer-border bg-tx-footer px-3 py-1 text-[10px] text-muted-foreground">
             <div>
               {transaction.size_bytes ? `${transaction.size_bytes} bytes` : ""}
             </div>
@@ -141,7 +141,7 @@ function TransactionNode({
               {transaction.fee_satoshis ? (
                 <>
                   {`fee `}
-                  <span className="text-emerald-600 text-[10px]">
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400">
                     {Number(transaction.fee_satoshis).toLocaleString()}
                   </span>
                 </>

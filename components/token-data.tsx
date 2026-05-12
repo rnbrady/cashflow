@@ -12,7 +12,7 @@ export function TokenData({
 
   const tokenColor = output.token_category
     ? hashToColor(output.token_category)
-    : "bg-gray-100 text-gray-800";
+    : "var(--muted)";
 
   return (
     <>
@@ -65,7 +65,7 @@ export function TokenData({
               }[output.nonfungible_token_capability ?? "missing"]
             }
           </div>
-          <div className="flex items-center overflow-hidden hover:overflow-visible hover:bg-gray-100 hover:relative hover:z-[2147483647]">
+          <div className="flex items-center overflow-hidden hover:relative hover:z-[2147483647] hover:overflow-visible hover:bg-muted">
             {(output.nonfungible_token_commitment?.length ?? 0) > 2 && (
               <div
                 className="text-[6px] px-0.25 rounded max-w-2/3 shrink-0"

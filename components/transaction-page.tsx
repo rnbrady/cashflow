@@ -53,35 +53,35 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Transaction Details</h1>
 
-      <div className="space-y-6">
+      <div className="flex flex-col gap-6">
         {/* Transaction Overview */}
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
           <h2 className="text-lg font-semibold mb-4">Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-600">Transaction ID</p>
+              <p className="text-sm text-muted-foreground">Transaction ID</p>
               <p className="font-mono text-sm break-all">{txId}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Size</p>
+              <p className="text-sm text-muted-foreground">Size</p>
               <p>{transaction.size_bytes} bytes</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Fee</p>
+              <p className="text-sm text-muted-foreground">Fee</p>
               <button
                 onClick={toggleUnit}
-                className="hover:text-blue-600 transition-colors"
+                className="transition-colors hover:text-primary"
                 title="Click to toggle between sats, BCH, and USD"
               >
                 {formatValue(transaction.fee_satoshis, unit, usdRate)}
               </button>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Locktime</p>
+              <p className="text-sm text-muted-foreground">Locktime</p>
               <p>{transaction.locktime}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-600">Type</p>
+              <p className="text-sm text-muted-foreground">Type</p>
               <p>{transaction.is_coinbase ? "Coinbase" : "Regular"}</p>
             </div>
           </div>
@@ -89,19 +89,19 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
 
         {/* Block Information */}
         {blockInclusion && (
-          <div className="bg-white shadow rounded-lg p-6">
+          <div className="rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
             <h2 className="text-lg font-semibold mb-4">Block Information</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-600">Block Height</p>
+                <p className="text-sm text-muted-foreground">Block Height</p>
                 <p>{blockInclusion.block.height}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Timestamp</p>
+                <p className="text-sm text-muted-foreground">Timestamp</p>
                 <p>{formatTimestamp(blockInclusion.block.timestamp)}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600">Block Hash</p>
+                <p className="text-sm text-muted-foreground">Block Hash</p>
                 <p className="font-mono text-sm break-all">
                   {blockInclusion.block.hash.replace("\\x", "")}
                 </p>
@@ -111,27 +111,27 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
         )}
 
         {/* Transaction I/O */}
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Inputs */}
             <div>
               <h2 className="text-lg font-semibold mb-4">
                 {transaction.inputs.length} Inputs
               </h2>
-              <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 {transaction.inputs.map((input) => (
                   <div key={input.input_index} className="border rounded p-4">
                     <div className="grid grid-cols-1 gap-2">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div>
-                          <p className="text-sm text-gray-600">Index</p>
+                          <p className="text-sm text-muted-foreground">Index</p>
                           <p>{input.input_index}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600">Value</p>
+                          <p className="text-sm text-muted-foreground">Value</p>
                           <button
                             onClick={toggleUnit}
-                            className="hover:text-blue-600 transition-colors"
+                            className="transition-colors hover:text-primary"
                             title="Click to toggle between sats, BCH, and USD"
                           >
                             {formatValue(input.value_satoshis, unit, usdRate)}
@@ -139,27 +139,27 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                         </div>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Outpoint TxID</p>
+                        <p className="text-sm text-muted-foreground">Outpoint TxID</p>
                         <Link
                           href={`/tx/${input.outpoint_transaction_hash.replace(
                             "\\x",
                             ""
                           )}`}
-                          className="font-mono text-sm break-all text-blue-600 hover:text-blue-800 hover:underline"
+                          className="font-mono text-sm break-all text-primary hover:underline"
                         >
                           {input.outpoint_transaction_hash.replace("\\x", "")}
                         </Link>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Outpoint Index</p>
+                        <p className="text-sm text-muted-foreground">Outpoint Index</p>
                         <p>{input.outpoint_index}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Sequence</p>
+                        <p className="text-sm text-muted-foreground">Sequence</p>
                         <p>{input.sequence_number}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           Unlocking Bytecode
                         </p>
                         <p className="font-mono text-sm break-all">
@@ -168,7 +168,7 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           Unlocking Script
                         </p>
                         <p className="font-mono text-sm break-all">
@@ -188,20 +188,20 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
               <h2 className="text-lg font-semibold mb-4">
                 {transaction.outputs.length} Outputs
               </h2>
-              <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 {transaction.outputs.map((output) => (
                   <div key={output.output_index} className="border rounded p-4">
                     <div className="grid grid-cols-1 gap-2">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                         <div>
-                          <p className="text-sm text-gray-600">Index</p>
+                          <p className="text-sm text-muted-foreground">Index</p>
                           <p>{output.output_index}</p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-600">Value</p>
+                          <p className="text-sm text-muted-foreground">Value</p>
                           <button
                             onClick={toggleUnit}
-                            className="hover:text-blue-600 transition-colors"
+                            className="transition-colors hover:text-primary"
                             title="Click to toggle between sats, BCH, and USD"
                           >
                             {formatValue(output.value_satoshis, unit, usdRate)}
@@ -209,7 +209,7 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                         </div>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Address</p>
+                        <p className="text-sm text-muted-foreground">Address</p>
                         <p className="font-mono text-sm break-all">
                           {tryDecodeCashAddress(
                             output.locking_bytecode,
@@ -218,7 +218,7 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-muted-foreground">
                           Locking Bytecode
                         </p>
                         <p className="font-mono text-sm break-all">
@@ -227,7 +227,7 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Locking Script</p>
+                        <p className="text-sm text-muted-foreground">Locking Script</p>
                         <p className="font-mono text-sm break-all">
                           {output.locking_bytecode
                             ? parseScript(output.locking_bytecode)
@@ -235,13 +235,13 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Type</p>
+                        <p className="text-sm text-muted-foreground">Type</p>
                         <p className="text-sm">
                           {getScriptType(output.locking_bytecode_pattern, true)}
                         </p>
                       </div>
                       <div>
-                        <p className="text-sm text-gray-600">Tokens</p>
+                        <p className="text-sm text-muted-foreground">Tokens</p>
                         <p className="text-sm">
                           {output.nonfungible_token_capability}{" "}
                           {output.nonfungible_token_commitment}{" "}
@@ -250,20 +250,20 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
                       </div>
                       {output.spent_by?.[0] && (
                         <div>
-                          <p className="text-sm text-gray-600">Spent By</p>
+                          <p className="text-sm text-muted-foreground">Spent By</p>
                           <Link
                             href={`/tx/${output.spent_by[0].transaction.hash.replace(
                               "\\x",
                               ""
                             )}`}
-                            className="font-mono text-sm break-all text-blue-600 hover:text-blue-800 hover:underline"
+                            className="font-mono text-sm break-all text-primary hover:underline"
                           >
                             {output.spent_by[0].transaction.hash.replace(
                               "\\x",
                               ""
                             )}
                           </Link>
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="mt-1 text-xs text-muted-foreground">
                             Input Index: {output.spent_by[0].input_index}
                           </p>
                         </div>
@@ -277,9 +277,9 @@ export function TransactionPage({ transaction }: TransactionPageProps) {
         </div>
 
         {/* Raw Transaction */}
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="rounded-lg border bg-card p-6 text-card-foreground shadow-sm">
           <h2 className="text-lg font-semibold mb-4">Raw Transaction</h2>
-          <pre className="font-mono text-sm bg-gray-50 p-4 rounded overflow-x-auto whitespace-pre-wrap">
+          <pre className="overflow-x-auto whitespace-pre-wrap rounded bg-muted p-4 font-mono text-sm">
             {formatHexWithNewlines(transaction.encoded_hex || "")}
           </pre>
         </div>

@@ -37,6 +37,13 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --flowchart: var(--color-gray-50);
+  --flowchart-dots: var(--color-gray-300);
+  --tx-border: var(--color-gray-300);
+  --tx-footer: var(--color-gray-50);
+  --tx-footer-border: var(--color-gray-200);
+  --tx-input-background: var(--color-gray-200);
+  --tx-output-background: var(--color-gray-200);
 }
 
 .dark {
@@ -71,6 +78,13 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --flowchart: var(--color-gray-900);
+  --flowchart-dots: var(--color-gray-500);
+  --tx-border: var(--color-gray-500);
+  --tx-footer: var(--color-gray-800);
+  --tx-footer-border: var(--color-gray-600);
+  --tx-input-background: var(--color-gray-500);
+  --tx-output-background: var(--color-gray-500);
 }
 
 @theme inline {
@@ -109,6 +123,12 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-flowchart: var(--flowchart);
+  --color-tx-border: var(--tx-border);
+  --color-tx-footer: var(--tx-footer);
+  --color-tx-footer-border: var(--tx-footer-border);
+  --color-tx-input-background: var(--tx-input-background);
+  --color-tx-output-background: var(--tx-output-background);
 }
 
 @layer base {

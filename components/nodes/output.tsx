@@ -43,28 +43,28 @@ function OutputNode({
       <div className="output-node">
         <Tooltip>
           <div
-            className="p-2 rounded-md bg-gray-100 transparency:bg-gray-200/50 border-r-4 shadow-md text-xs text-right"
+            className="rounded-md border-r-4 bg-accent p-2 text-right text-xs text-foreground shadow-md transparency:bg-tx-output-background/50"
             style={{ borderRightColor: borderColor }}
           >
             <TooltipTrigger asChild>
               <div className="font-medium mb-1 flex justify-between items-center">
-                <span className="font-medium text-gray-500">
+                <span className="font-medium text-muted-foreground">
                   #{output.output_index}
                 </span>
-                <span className="text-emerald-600 text-[10px]">
+                <span className="text-[10px] text-emerald-600 dark:text-emerald-400">
                   {Number(output.value_satoshis).toLocaleString()}
                 </span>
               </div>
             </TooltipTrigger>
 
-            <div className="text-gray-500">
+            <div className="text-muted-foreground">
               <div className="flex justify-between text-[10px] mb-1 gap-2 items-start">
                 <div className="flex items-center gap-0.5">
-                  <Lock className="w-2.5 h-2.5 shrink-0" />
+                  <Lock className="size-2.5 shrink-0" />
                   <ScriptTypeBadge output={output} />
                 </div>
                 {output.locking_bytecode && (
-                  <div className="text-[10px] truncate hover:overflow-visible hover:bg-gray-100 hover:z-[2147483647] hover:whitespace-pre hover:absolute hover:translate-x-22">
+                  <div className="truncate text-[10px] hover:absolute hover:z-[2147483647] hover:translate-x-22 hover:overflow-visible hover:whitespace-pre hover:bg-muted">
                     {address === "Could not decode" ? (
                       <div
                         onClick={toggleDecodeOpReturns}
@@ -83,7 +83,7 @@ function OutputNode({
                                     href={field}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-blue-500"
+                                    className="text-primary"
                                     onClick={(e) => e.stopPropagation()}
                                     key={field}
                                   >
@@ -100,7 +100,7 @@ function OutputNode({
                                     )}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-blue-500"
+                                    className="text-primary"
                                     onClick={(e) => e.stopPropagation()}
                                     key={field}
                                   >
@@ -115,7 +115,7 @@ function OutputNode({
                                     href={`https://${field}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-blue-500"
+                                    className="text-primary"
                                     onClick={(e) => e.stopPropagation()}
                                     key={field}
                                   >
@@ -128,7 +128,7 @@ function OutputNode({
                             })
                         ) : (
                           <div className="flex items-center gap-0.5 truncate">
-                            <div className="text-[6px] px-0.25 rounded max-w-2/3 shrink-0 border border-gray-500 ">
+                            <div className="max-w-2/3 shrink-0 rounded border px-0.25 text-[6px]">
                               {65}
                             </div>
                             <div className="truncate">
@@ -171,7 +171,7 @@ function OutputNode({
           type="source"
           position={Position.Right}
           isConnectable={isConnectable}
-          className="w-3 h-3 bg-green-500"
+          className="size-3 bg-green-500"
           style={{ right: -4 }}
         />
       </div>

@@ -31,6 +31,7 @@ import { DevTools } from "./devtools";
 import { useHotkeys } from "react-hotkeys-hook";
 import { getLayoutedNodes } from "@/lib/use-layout-nodes";
 import { useSearchParams } from "next/navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const raleway = Raleway({
   weight: ["700"],
@@ -136,7 +137,7 @@ export function ChartPage() {
           labelBgPadding: [2, 1] as [number, number],
           labelBgBorderRadius: 2,
           labelShowBg: true,
-          labelBgStyle: { fill: "#ffffff" },
+          labelBgStyle: { fill: "var(--background)" },
         };
       }),
     [edges]
@@ -144,8 +145,14 @@ export function ChartPage() {
 
   const searchParams = useSearchParams();
 
-  const transactionHashes = searchParams.getAll("tx");
-  const transactionNotes = searchParams.getAll("note");
+  const transactionHashes = useMemo(
+    () => searchParams.getAll("tx"),
+    [searchParams]
+  );
+  const transactionNotes = useMemo(
+    () => searchParams.getAll("note"),
+    [searchParams]
+  );
 
   useEffect(() => {
     console.log("searchParams effect running");
@@ -161,7 +168,13 @@ export function ChartPage() {
         setTimeout(() => reactFlow.fitView(), 100);
       });
     }
-  }, [transactionHashes, addNodesAndEdges, addAnnotation, transactionNotes]);
+  }, [
+    transactionHashes,
+    addNodesAndEdges,
+    addAnnotation,
+    transactionNotes,
+    reactFlow,
+  ]);
 
   const handleSearch = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
@@ -239,14 +252,14 @@ export function ChartPage() {
   );
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50">
-      <header className="bg-white border-b p-4 shadow-sm">
+    <div className="flex h-screen flex-col bg-flowchart">
+      <header className="border-b bg-card p-4 text-card-foreground shadow-sm">
         <div className="flex justify-between flex-col md:flex-row md:items-end gap-4">
           <div className="shrink-0 text-center md:text-left">
-            <h1 className={cn("text-xl text-gray-800 ", raleway.className)}>
+            <h1 className={cn("text-xl text-foreground", raleway.className)}>
               Cashflow
             </h1>
-            <h2 className="text-xs text-gray-500">
+            <h2 className="text-xs text-muted-foreground">
               Bitcoin Cash Graph Explorer
             </h2>
           </div>
@@ -271,9 +284,9 @@ export function ChartPage() {
                 className="flex-1 sm:flex-initial"
               >
                 {loading ? (
-                  <Loader className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader className="mr-2 size-4 animate-spin" />
                 ) : (
-                  <Search className="h-4 w-4 mr-2" />
+                  <Search className="mr-2 size-4" />
                 )}
                 Add
               </Button>
@@ -313,11 +326,12 @@ export function ChartPage() {
               >
                 Clear
               </Button>
+              <ThemeToggle />
             </div>
           </form>
         </div>
 
-        {error && <div className="text-red-500 mt-2">{error}</div>}
+        {error && <div className="mt-2 text-destructive">{error}</div>}
       </header>
 
       <div className="flex flex-1 overflow-hidden">
@@ -343,7 +357,7 @@ export function ChartPage() {
               variant={BackgroundVariant.Dots}
               gap={12}
               size={1}
-              color="lightgray"
+              color="var(--flowchart-dots)"
             />
             {showDevTools && <DevTools position="top-left" />}
           </ReactFlow>
