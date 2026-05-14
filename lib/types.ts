@@ -80,10 +80,12 @@ export type InputNodeType = Node<
   | {
       input: Input;
       placeholder: false;
+      synthetic?: boolean;
     }
   | {
       placeholder: true;
       input: Partial<Input>;
+      synthetic?: boolean;
     },
   "input"
 >;
@@ -92,10 +94,12 @@ export type OutputNodeType = Node<
   | {
       output: Output;
       placeholder: false;
+      synthetic?: boolean;
     }
   | {
       placeholder: true;
       output: Partial<Output>;
+      synthetic?: boolean;
     },
   "output"
 >;
@@ -104,10 +108,12 @@ export type TransactionNodeType = Node<
   | {
       transaction: Transaction;
       placeholder: false;
+      synthetic?: boolean;
     }
   | {
       placeholder: true;
       transaction: Partial<Transaction>;
+      synthetic?: boolean;
     },
   "transaction"
 >;

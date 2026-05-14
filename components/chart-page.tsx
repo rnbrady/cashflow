@@ -32,6 +32,7 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { getLayoutedNodes } from "@/lib/use-layout-nodes";
 import { useSearchParams } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { createBcmrParsingTransactionNodes } from "@/lib/bcmr-parsing-transaction";
 
 const raleway = Raleway({
   weight: ["700"],
@@ -113,6 +114,25 @@ export function ChartPage() {
     addAnnotation,
     clear,
   } = useStore(useShallow(selector));
+
+  const addBcmrParsingTransaction = useCallback(() => {
+    const center = reactFlow.screenToFlowPosition({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    });
+
+    addNodesAndEdges({
+      newNodes: createBcmrParsingTransactionNodes({
+        position: {
+          x: center.x - 200,
+          y: center.y - 120,
+        },
+      }),
+      newEdges: [],
+    });
+  }, [addNodesAndEdges, reactFlow]);
+
+  useHotkeys("p", addBcmrParsingTransaction);
 
   const styledEdges = useMemo(
     () =>
@@ -207,6 +227,8 @@ export function ChartPage() {
       event.preventDefault();
 
       if (node.type === "transaction" && node.id) {
+        if (node.data.synthetic) return;
+
         fetchAndDraw({
           transactionHashes: [node.id],
           addNodesAndEdges,
@@ -220,6 +242,8 @@ export function ChartPage() {
 
       if (node.type === "input") {
         const inputNode: InputNodeType = node as InputNodeType;
+        if (inputNode.data.synthetic) return;
+
         const transactionHash = inputNode.data.input.transaction?.hash;
         if (!transactionHash) return;
         fetchAndDraw({
@@ -235,6 +259,8 @@ export function ChartPage() {
 
       if (node.type === "output") {
         const outputNode: OutputNodeType = node as OutputNodeType;
+        if (outputNode.data.synthetic) return;
+
         const transactionHash = outputNode.data.output.transaction_hash;
         if (!transactionHash) return;
         fetchAndDraw({

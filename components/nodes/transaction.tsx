@@ -31,6 +31,9 @@ function TransactionNode({
   const contentHeight = Math.max(numInputs, numOutputs) * 93 + 8;
 
   const cleanHash = transaction.hash?.replace(/\\x/g, "") || "";
+  const headerLabel = /^0{64}$/.test(cleanHash)
+    ? "Parsing transaction"
+    : cleanHash;
 
   const selector = useCallback(
     (state: ChartState) => ({
@@ -67,7 +70,7 @@ function TransactionNode({
             }}
           >
             <div className="text-sm font-medium truncate group-hover:mr-28">
-              {cleanHash}
+              {headerLabel}
             </div>
             <div className="absolute right-2 top-2 flex gap-1">
               <Button

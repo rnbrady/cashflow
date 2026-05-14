@@ -11,7 +11,13 @@ import {
   type Viewport,
 } from "@xyflow/react";
 import Dagre from "@dagrejs/dagre";
-import { Output, TransactionNodeType, isTransactionNode } from "./types";
+import {
+  Output,
+  TransactionNodeType,
+  isTransactionNode,
+  type InputNodeType,
+  type OutputNodeType,
+} from "./types";
 
 export interface ChartState {
   nodes: Node[];
@@ -63,8 +69,48 @@ export const useStore = create<ChartState>((set, get) => ({
     });
   },
   onConnect: (connection) => {
+    const state = get();
+    const sourceNode = state.nodes.find(
+      (node): node is OutputNodeType =>
+        node.id === connection.source && node.type === "output"
+    );
+    const targetNode = state.nodes.find(
+      (node): node is InputNodeType =>
+        node.id === connection.target && node.type === "input"
+    );
+    const output =
+      sourceNode && "output" in sourceNode.data
+        ? normalizeOutput(sourceNode.data.output, sourceNode.id)
+        : undefined;
+    const shouldPopulateTargetInput =
+      output &&
+      targetNode?.data.synthetic &&
+      targetNode.data.input.input_index === "0";
+
     set({
-      edges: addEdge(connection, get().edges),
+      nodes: shouldPopulateTargetInput
+        ? state.nodes.map((node) => {
+            if (node.id !== targetNode.id || node.type !== "input") return node;
+
+            return {
+              ...targetNode,
+              data: {
+                ...targetNode.data,
+                input: {
+                  ...targetNode.data.input,
+                  outpoint: output,
+                  outpoint_transaction_hash: output.transaction_hash,
+                  outpoint_index: output.output_index,
+                  value_satoshis: output.value_satoshis,
+                },
+              },
+            };
+          })
+        : state.nodes,
+      edges: addEdge(
+        output ? { ...connection, data: { output } } : connection,
+        state.edges
+      ),
     });
   },
   setNodes: (nodes) => {
@@ -175,6 +221,26 @@ export const useStore = create<ChartState>((set, get) => ({
     });
   },
 }));
+
+function normalizeOutput(
+  output: Partial<Output>,
+  sourceNodeId: string
+): Output {
+  const [transactionHash, outputIndex = "0"] = sourceNodeId.split("-output-");
+
+  return {
+    transaction_hash: output.transaction_hash ?? transactionHash,
+    output_index: output.output_index ?? outputIndex,
+    locking_bytecode: output.locking_bytecode ?? null,
+    locking_bytecode_pattern: output.locking_bytecode_pattern ?? null,
+    value_satoshis: output.value_satoshis ?? "0",
+    nonfungible_token_capability: output.nonfungible_token_capability ?? null,
+    nonfungible_token_commitment: output.nonfungible_token_commitment ?? null,
+    fungible_token_amount: output.fungible_token_amount ?? null,
+    token_category: output.token_category ?? null,
+    spent_by: output.spent_by ?? [],
+  };
+}
 
 function upsertEdges({
   currentEdges,
